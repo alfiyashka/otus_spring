@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="testReader" class="ru.otus.avalieva.testing.impl.QuestionsCSVReaderImpl">
+        <constructor-arg name="filename" value="questions.csv"/>
+    </bean>
+
+    <bean id="questionnaire" class="ru.otus.avalieva.testing.impl.QuestionnaireImpl">
+    </bean>
+
+    <bean id="testProcessor" class="ru.otus.avalieva.testing.impl.TestProcessorImpl">
+        <constructor-arg name="reader" ref="testReader"/>
+        <constructor-arg name="questionnaire" ref="questionnaire"/>
+    </bean>
+
+</beans>
