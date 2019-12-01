@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.otus.avalieva.testing.Questionnaire;
-import ru.otus.avalieva.testing.QuestionsCSVReader;
+import ru.otus.avalieva.testing.QuestionsReader;
 import ru.otus.avalieva.testing.impl.model.Question;
 import ru.otus.avalieva.testing.TestProcessor;
 
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 public class TestProcessorTest {
 
     private final Questionnaire questionnaire = Mockito.mock(Questionnaire.class);
-    private final QuestionsCSVReader questionsСSVReader = Mockito.mock(QuestionsCSVReader.class);
+    private final QuestionsReader questionsСSVReader = Mockito.mock(QuestionsReader.class);
 
     private TestProcessor testProcessor;
 
@@ -28,7 +28,7 @@ public class TestProcessorTest {
         testProcessor = new TestProcessorImpl(questionsСSVReader, questionnaire);
     }
 
-    public List<Question> generateQuestions() {
+    private List<Question> generateQuestions() {
         List<Question> questions = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Question iQuestion = new Question();
