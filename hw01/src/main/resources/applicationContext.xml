@@ -8,7 +8,16 @@
         <constructor-arg name="filename" value="questions.csv"/>
     </bean>
 
+    <bean id="ioService" class="ru.otus.avalieva.testing.impl.IOServiceImpl">
+    </bean>
+
+    <bean id="personalInfoCollector" class="ru.otus.avalieva.testing.impl.PersonalInfoCollectorImpl">
+        <constructor-arg name="ioService" ref="ioService"/>
+    </bean>
+
     <bean id="questionnaire" class="ru.otus.avalieva.testing.impl.QuestionnaireImpl">
+        <constructor-arg name="personalInfoCollector" ref="personalInfoCollector"/>
+        <constructor-arg name="ioService" ref="ioService"/>
     </bean>
 
     <bean id="testProcessor" class="ru.otus.avalieva.testing.impl.TestProcessorImpl">

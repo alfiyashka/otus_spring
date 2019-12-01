@@ -1,35 +1,31 @@
 package ru.otus.avalieva.testing.impl;
 
+import ru.otus.avalieva.testing.IOService;
+import ru.otus.avalieva.testing.PersonalInfoCollector;
 import ru.otus.avalieva.testing.Questionnaire;
 import ru.otus.avalieva.testing.impl.model.Question;
 
-import java.util.Scanner;
 
 public class QuestionnaireImpl implements Questionnaire {
+    private final IOService ioService;
+    private final PersonalInfoCollector personalInfoCollector;
+
     private String firstName;
     private String lastName;
-    private final Scanner scanner;
 
-    public QuestionnaireImpl()
+
+    public QuestionnaireImpl(PersonalInfoCollector personalInfoCollector,
+                             IOService ioService)
     {
-        scanner = new Scanner(System.in);
-    }
-
-    private void getFirstName() {
-        System.out.println("Enter your first name:");
-        firstName = scanner.nextLine();
-    }
-
-    private void getLastName() {
-        System.out.println("Enter your last name:");
-        lastName = scanner.nextLine();
+        this.personalInfoCollector = personalInfoCollector;
+        this.ioService = ioService;
     }
 
     @Override
     public void printStartTestInfo() {
-        getFirstName();
-        getLastName();
-        System.out.println(
+        firstName = personalInfoCollector.getFirstName();
+        lastName = personalInfoCollector.getLastName();
+        ioService.outputData(
                 String.format("%s %s, the testing starts, give the answer in the form of numbers.",
                         firstName, lastName));
     }
@@ -37,30 +33,30 @@ public class QuestionnaireImpl implements Questionnaire {
     @Override
     public int askQuestion(final Question question, final int questionNumber) {
         while(true) {
-            System.out.println(String.format("%d. %s", questionNumber, question.getQuestion()));
+            ioService.outputData(String.format("%d. %s", questionNumber, question.getQuestion()));
             question.getAnswers()
                     .entrySet()
                     .stream()
-                    .forEach(it -> System.out.println(it.getValue()));
-            System.out.println("Please, give the answer in the form of numbers:");
-            String data = scanner.nextLine();
+                    .forEach(it -> ioService.outputData(it.getValue()));
+            ioService.outputData("Please, give the answer in the form of numbers:");
+            String data = ioService.inputData();
             try {
                 int answer = Integer.parseInt(data);
                 if (answer < 1 || answer > 4) {
-                    System.out.println("Incorrect input: the answer with number " + answer +" does not exist. Try again ");
+                    ioService.outputData("Incorrect input: the answer with number " + answer +" does not exist. Try again ");
                     continue;
                 }
                 return answer;
             }
             catch (Exception e) {
-                System.out.println("Incorrect input: cannot get number, try again ");
+                ioService.outputData("Incorrect input: cannot get number, try again ");
             }
         }
     }
 
     @Override
     public void printResult(int correctAnswers, int questionsAmount) {
-        System.out.println(
+        ioService.outputData(
                 String.format("%s %s, your result: correct %d from %d", firstName, lastName,
                         correctAnswers, questionsAmount)
         );
