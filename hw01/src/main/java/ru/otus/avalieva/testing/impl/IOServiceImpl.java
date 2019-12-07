@@ -1,9 +1,11 @@
 package ru.otus.avalieva.testing.impl;
 
+import org.springframework.stereotype.Service;
 import ru.otus.avalieva.testing.IOService;
 
 import java.util.Scanner;
 
+@Service
 public class IOServiceImpl implements IOService {
     private final Scanner scanner;
 

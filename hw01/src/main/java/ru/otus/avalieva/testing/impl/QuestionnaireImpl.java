@@ -1,55 +1,70 @@
 package ru.otus.avalieva.testing.impl;
 
+import org.springframework.stereotype.Service;
 import ru.otus.avalieva.testing.IOService;
+import ru.otus.avalieva.testing.MessageService;
 import ru.otus.avalieva.testing.PersonalInfoCollector;
 import ru.otus.avalieva.testing.Questionnaire;
 import ru.otus.avalieva.testing.impl.model.Question;
 
-
+@Service
 public class QuestionnaireImpl implements Questionnaire {
     private final IOService ioService;
     private final PersonalInfoCollector personalInfoCollector;
+    private final MessageService messageService;
 
-    private String firstName;
-    private String lastName;
-
-
-    public QuestionnaireImpl(PersonalInfoCollector personalInfoCollector,
-                             IOService ioService)
-    {
+    public QuestionnaireImpl(final PersonalInfoCollector personalInfoCollector,
+                             final IOService ioService,
+                             final MessageService messageService) {
         this.personalInfoCollector = personalInfoCollector;
         this.ioService = ioService;
+        this.messageService = messageService;
     }
 
     @Override
     public void printStartTestInfo() {
-        firstName = personalInfoCollector.getFirstName();
-        lastName = personalInfoCollector.getLastName();
         ioService.outputData(
-                String.format("%s %s, the testing starts, give the answer in the form of numbers.",
-                        firstName, lastName));
+                messageService.getMessage("start.testing",
+                        new Object[]{firstName(), lastName()})
+        );
     }
+
+    private String firstName() {
+        return personalInfoCollector.getFirstName();
+    }
+
+    private String lastName() {
+        return personalInfoCollector.getLastName();
+    }
+
 
     @Override
     public int askQuestion(final Question question, final int questionNumber) {
-        while(true) {
-            ioService.outputData(String.format("%d. %s", questionNumber, question.getQuestion()));
+        while (true) {
+            ioService.outputData(
+                    messageService.getMessage("question",
+                            new Object[]{questionNumber, question.getQuestion()})
+            );
             question.getAnswers()
                     .entrySet()
                     .stream()
                     .forEach(it -> ioService.outputData(it.getValue()));
-            ioService.outputData("Please, give the answer in the form of numbers:");
+            ioService.outputData(
+                    messageService.getMessage("answer.rule"));
             String data = ioService.inputData();
             try {
                 int answer = Integer.parseInt(data);
-                if (answer < 1 || answer > 4) {
-                    ioService.outputData("Incorrect input: the answer with number " + answer +" does not exist. Try again ");
+                if (answer < 1 || answer > question.getAnswers().size() + 1) {
+                    ioService.outputData(
+                            messageService.getMessage("error.incorrect.answer.number",
+                                    new Object[]{answer})
+                    );
                     continue;
                 }
                 return answer;
-            }
-            catch (Exception e) {
-                ioService.outputData("Incorrect input: cannot get number, try again ");
+            } catch (Exception e) {
+                ioService.outputData(
+                        messageService.getMessage("error.incorrect.answer.not.number"));
             }
         }
     }
@@ -57,8 +72,9 @@ public class QuestionnaireImpl implements Questionnaire {
     @Override
     public void printResult(int correctAnswers, int questionsAmount) {
         ioService.outputData(
-                String.format("%s %s, your result: correct %d from %d", firstName, lastName,
-                        correctAnswers, questionsAmount)
+                String.format(
+                        messageService.getMessage("testing.result",
+                                new Object[]{firstName(), lastName(), correctAnswers, questionsAmount}))
         );
     }
 
