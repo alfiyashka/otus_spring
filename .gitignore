@@ -1,0 +1,4 @@
+/.idea/*
+/hw01/target/*
+
+*.iml
