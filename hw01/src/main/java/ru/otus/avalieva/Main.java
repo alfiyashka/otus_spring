@@ -1,8 +1,6 @@
 package ru.otus.avalieva;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import ru.otus.avalieva.testing.IOService;
 import ru.otus.avalieva.testing.MessageService;
 import ru.otus.avalieva.testing.TestProcessor;
@@ -13,7 +11,6 @@ import ru.otus.avalieva.testing.TestProcessor;
 @ComponentScan
 public class Main {
     public static void main(String[] args) {
-
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(Main.class);
         IOService ioService = context.getBean(IOService.class);
@@ -29,14 +26,5 @@ public class Main {
         }
     }
 
-    @Bean(name = "messageSource")
-    public MessageSource getMessageResource()  {
-        ReloadableResourceBundleMessageSource messageResource =
-                new ReloadableResourceBundleMessageSource();
-        messageResource.setCacheSeconds(3600);
-        messageResource.setBasenames("classpath:messages/messages");
-        messageResource.setUseCodeAsDefaultMessage(true);
-        messageResource.setDefaultEncoding("UTF-8");
-        return messageResource;
-    }
+
 }

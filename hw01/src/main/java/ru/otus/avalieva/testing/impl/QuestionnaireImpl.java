@@ -41,20 +41,20 @@ public class QuestionnaireImpl implements Questionnaire {
     @Override
     public int askQuestion(final Question question, final int questionNumber) {
         while (true) {
+            var questionStr = messageService.getMessage(question.getQuestion());
             ioService.outputData(
                     messageService.getMessage("question",
-                            new Object[]{questionNumber, question.getQuestion()})
+                            new Object[]{questionNumber, questionStr})
             );
             question.getAnswers()
                     .entrySet()
-                    .stream()
-                    .forEach(it -> ioService.outputData(it.getValue()));
+                    .forEach(it -> ioService.outputData(messageService.getMessage(it.getValue())));
             ioService.outputData(
                     messageService.getMessage("answer.rule"));
             String data = ioService.inputData();
             try {
                 int answer = Integer.parseInt(data);
-                if (answer < 1 || answer > question.getAnswers().size() + 1) {
+                if (answer < 1 || answer > question.getAnswers().size()) {
                     ioService.outputData(
                             messageService.getMessage("error.incorrect.answer.number",
                                     new Object[]{answer})
@@ -72,9 +72,8 @@ public class QuestionnaireImpl implements Questionnaire {
     @Override
     public void printResult(int correctAnswers, int questionsAmount) {
         ioService.outputData(
-                String.format(
-                        messageService.getMessage("testing.result",
-                                new Object[]{firstName(), lastName(), correctAnswers, questionsAmount}))
+                messageService.getMessage("testing.result",
+                        new Object[]{firstName(), lastName(), correctAnswers, questionsAmount})
         );
     }
 

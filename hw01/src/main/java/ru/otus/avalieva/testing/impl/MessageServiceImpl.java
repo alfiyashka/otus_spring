@@ -1,6 +1,5 @@
 package ru.otus.avalieva.testing.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -11,13 +10,14 @@ import java.util.Locale;
 @Service
 public class MessageServiceImpl implements MessageService {
 
-    @Autowired
     private MessageSource messageSource;
 
     private final Locale locale;
 
-    MessageServiceImpl(@Value("${locale.data}") String localValue) {
+    MessageServiceImpl(@Value("${locale.data}") String localValue,
+                       MessageSource messageSource) {
         locale = getLocale(localValue);
+        this.messageSource = messageSource;
     }
 
 
@@ -26,13 +26,7 @@ public class MessageServiceImpl implements MessageService {
         if (localValue == null || localValue.isEmpty()) {
             return Locale.getDefault();
         }
-        if (localValue.contains("ru")) {
-            return new Locale("ru", "RU");
-        }
-        else if (localValue.contains("en")) {
-            return Locale.ENGLISH;
-        }
-        return Locale.getDefault();
+        return Locale.forLanguageTag(localValue);
     }
 
     @Override

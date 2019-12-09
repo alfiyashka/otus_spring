@@ -62,7 +62,7 @@ public class TestProcessorTest {
         int correctResults = questions.size() / 2;
         int questionsAmount = questions.size();
         verify(questionnaire, times(1)).printResult(correctResults, questionsAmount);
-        verify(messageService, times(0)).getMessage(anyString());
+        verify(messageService, never()).getMessage(anyString());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class TestProcessorTest {
         exc.getMessage();
 
         verify(messageService).getMessage("error.question.reader.not.init");
-        verify(questionnaire, times(0)).printStartTestInfo();
+        verify(questionnaire, never()).printStartTestInfo();
     }
 
     @Test
@@ -88,7 +88,7 @@ public class TestProcessorTest {
             testProcessor.test();
         });
         verify(messageService).getMessage("error.questionnaire.not.init");
-        verify(questionnaire, times(0)).printStartTestInfo();
+        verify(questionnaire, never()).printStartTestInfo();
     }
 
     @Test
@@ -103,8 +103,8 @@ public class TestProcessorTest {
         verify(questionnaire, times(1)).printStartTestInfo();
         verify(questionsСSVReader, times(1)).getQuestions();
 
-        verify(questionnaire, times(0)).askQuestion(any(), anyInt());
-        verify(questionnaire, times(0)).printResult(anyInt(), anyInt());
+        verify(questionnaire, never()).askQuestion(any(), anyInt());
+        verify(questionnaire, never()).printResult(anyInt(), anyInt());
     }
 }
 
