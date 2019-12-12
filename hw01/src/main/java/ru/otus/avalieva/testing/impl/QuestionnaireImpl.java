@@ -24,8 +24,7 @@ public class QuestionnaireImpl implements Questionnaire {
     @Override
     public void printStartTestInfo() {
         ioService.outputData(
-                messageService.getMessage("start.testing",
-                        new Object[]{firstName(), lastName()})
+                messageService.getMessage("start.testing", firstName(), lastName())
         );
     }
 
@@ -37,18 +36,15 @@ public class QuestionnaireImpl implements Questionnaire {
         return personalInfoCollector.getLastName();
     }
 
-
     @Override
     public int askQuestion(final Question question, final int questionNumber) {
         while (true) {
-            var questionStr = messageService.getMessage(question.getQuestion());
             ioService.outputData(
-                    messageService.getMessage("question",
-                            new Object[]{questionNumber, questionStr})
+                    messageService.getMessage("question", questionNumber, question.getQuestion())
             );
             question.getAnswers()
                     .entrySet()
-                    .forEach(it -> ioService.outputData(messageService.getMessage(it.getValue())));
+                    .forEach(it -> ioService.outputData(it.getValue()));
             ioService.outputData(
                     messageService.getMessage("answer.rule"));
             String data = ioService.inputData();
@@ -56,8 +52,7 @@ public class QuestionnaireImpl implements Questionnaire {
                 int answer = Integer.parseInt(data);
                 if (answer < 1 || answer > question.getAnswers().size()) {
                     ioService.outputData(
-                            messageService.getMessage("error.incorrect.answer.number",
-                                    new Object[]{answer})
+                            messageService.getMessage("error.incorrect.answer.number", answer)
                     );
                     continue;
                 }
@@ -73,7 +68,7 @@ public class QuestionnaireImpl implements Questionnaire {
     public void printResult(int correctAnswers, int questionsAmount) {
         ioService.outputData(
                 messageService.getMessage("testing.result",
-                        new Object[]{firstName(), lastName(), correctAnswers, questionsAmount})
+                        firstName(), lastName(), correctAnswers, questionsAmount)
         );
     }
 

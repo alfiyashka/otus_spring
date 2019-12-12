@@ -33,7 +33,7 @@ public class QuestionnaireTest {
         when(personalInfoCollector.getLastName()).thenReturn(lastName);
 
         String startTestingMsg = "Start";
-        when(messageService.getMessage("start.testing", new Object[]{firstName, lastName}))
+        when(messageService.getMessage("start.testing", firstName, lastName))
                 .thenReturn(startTestingMsg);
         doNothing().when(ioService).outputData(startTestingMsg);
 
@@ -43,7 +43,7 @@ public class QuestionnaireTest {
         verify(personalInfoCollector, times(1)).getLastName();
 
         verify(messageService, times(1))
-                .getMessage("start.testing", new Object[]{firstName, lastName});
+                .getMessage("start.testing", firstName, lastName);
         verify(ioService, times(1)).outputData(startTestingMsg);
     }
 
@@ -59,14 +59,14 @@ public class QuestionnaireTest {
         when(personalInfoCollector.getLastName()).thenReturn(lastName);
 
         when(messageService.getMessage("testing.result",
-                new Object[]{firstName, lastName, correctAnswers, answers}))
+                firstName, lastName, correctAnswers, answers))
                 .thenReturn(resultMsg);
         doNothing().when(ioService).outputData(resultMsg);
 
         questionnaire.printResult(correctAnswers, answers);
 
         verify(messageService, times(1)).getMessage("testing.result",
-                new Object[]{firstName, lastName, correctAnswers, answers});
+                firstName, lastName, correctAnswers, answers);
         verify(ioService, times(1)).outputData(resultMsg);
     }
 
@@ -86,15 +86,10 @@ public class QuestionnaireTest {
         int questionNumber = 1;
 
         String questionMsg = "Question";
-        when(messageService.getMessage(question.getQuestion()))
+        when(messageService.getMessage("question", questionNumber, question.getQuestion()))
                 .thenReturn(questionMsg);
-        when(messageService.getMessage("question", new Object[]{questionNumber, question.getQuestion()}))
-                .thenReturn(questionMsg);
-
         doNothing().when(ioService).outputData(questionMsg);
         for (Map.Entry<Integer, String> answer : question.getAnswers().entrySet()) {
-            when(messageService.getMessage(answer.getValue()))
-                    .thenReturn(answer.getValue());
             doNothing().when(ioService).outputData(answer.getValue());
         }
         String answerRuleMsg = "Rule";
@@ -106,12 +101,10 @@ public class QuestionnaireTest {
         var result = questionnaire.askQuestion(question, questionNumber);
         assertEquals(givenAnswer, result);
 
-        verify(messageService, times(1)).getMessage(question.getQuestion());
         verify(messageService, times(1))
-                .getMessage("question", new Object[]{questionNumber, question.getQuestion()});
+                .getMessage("question", questionNumber, question.getQuestion());
         verify(ioService, times(1)).outputData(questionMsg);
         for (Map.Entry<Integer, String> answer : question.getAnswers().entrySet()) {
-            verify(messageService, times(1)).getMessage(answer.getValue());
             verify(ioService, times(1)).outputData(answer.getValue());
         }
         verify(messageService, times(1)).getMessage("answer.rule");
@@ -125,14 +118,10 @@ public class QuestionnaireTest {
         int questionNumber = 1;
 
         String questionMsg = "Question";
-        when(messageService.getMessage(question.getQuestion()))
-                .thenReturn(questionMsg);
-        when(messageService.getMessage("question", new Object[]{questionNumber, question.getQuestion()}))
+        when(messageService.getMessage("question", questionNumber, question.getQuestion()))
                 .thenReturn(questionMsg);
         doNothing().when(ioService).outputData(questionMsg);
         for (Map.Entry<Integer, String> answer : question.getAnswers().entrySet()) {
-            when(messageService.getMessage(answer.getValue()))
-                    .thenReturn(answer.getValue());
             doNothing().when(ioService).outputData(answer.getValue());
         }
         String answerRuleMsg = "Rule";
@@ -143,26 +132,24 @@ public class QuestionnaireTest {
         when(ioService.inputData()).thenReturn(givenIncorrectNumberAnswer.toString()).thenReturn(givenAnswer.toString());
 
         String incorrectNumberAnswerMsg = "Incorrect answer";
-        when(messageService.getMessage("error.incorrect.answer.number", new Object[]{givenIncorrectNumberAnswer}))
+        when(messageService.getMessage("error.incorrect.answer.number", givenIncorrectNumberAnswer))
                 .thenReturn(incorrectNumberAnswerMsg);
         doNothing().when(ioService).outputData(incorrectNumberAnswerMsg);
 
         var result = questionnaire.askQuestion(question, questionNumber);
         assertEquals(givenAnswer, result);
 
-        verify(messageService, times(2)).getMessage(question.getQuestion());
         verify(messageService, times(2))
-                .getMessage("question", new Object[]{questionNumber, question.getQuestion()});
+                .getMessage("question", questionNumber, question.getQuestion());
         verify(ioService, times(2)).outputData(questionMsg);
         for (Map.Entry<Integer, String> answer : question.getAnswers().entrySet()) {
-            verify(messageService, times(2)).getMessage(answer.getValue());
             verify(ioService, times(2)).outputData(answer.getValue());
         }
         verify(messageService, times(2)).getMessage("answer.rule");
         verify(ioService, times(2)).outputData(answerRuleMsg);
         verify(ioService, times(2)).inputData();
         verify(messageService, times(1))
-                .getMessage("error.incorrect.answer.number", new Object[]{givenIncorrectNumberAnswer});
+                .getMessage("error.incorrect.answer.number", givenIncorrectNumberAnswer);
         verify(ioService, times(1)).outputData(incorrectNumberAnswerMsg);
     }
 
@@ -172,14 +159,10 @@ public class QuestionnaireTest {
         int questionNumber = 1;
 
         String questionMsg = "Question";
-        when(messageService.getMessage(question.getQuestion()))
-                .thenReturn(questionMsg);
-        when(messageService.getMessage("question", new Object[]{questionNumber, question.getQuestion()}))
+        when(messageService.getMessage("question", questionNumber, question.getQuestion()))
                 .thenReturn(questionMsg);
         doNothing().when(ioService).outputData(questionMsg);
         for (Map.Entry<Integer, String> answer : question.getAnswers().entrySet()) {
-            when(messageService.getMessage(answer.getValue()))
-                    .thenReturn(answer.getValue());
             doNothing().when(ioService).outputData(answer.getValue());
         }
         String answerRuleMsg = "Rule";
@@ -197,12 +180,10 @@ public class QuestionnaireTest {
         var result = questionnaire.askQuestion(question, questionNumber);
         assertEquals(givenAnswer, result);
 
-        verify(messageService, times(2)).getMessage(question.getQuestion());
         verify(messageService, times(2))
-                .getMessage("question", new Object[]{questionNumber, question.getQuestion()});
+                .getMessage("question", questionNumber, question.getQuestion());
         verify(ioService, times(2)).outputData(questionMsg);
         for (Map.Entry<Integer, String> answer : question.getAnswers().entrySet()) {
-            verify(messageService, times(2)).getMessage(answer.getValue());
             verify(ioService, times(2)).outputData(answer.getValue());
         }
         verify(messageService, times(2)).getMessage("answer.rule");

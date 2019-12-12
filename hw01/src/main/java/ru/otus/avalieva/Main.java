@@ -21,7 +21,7 @@ public class Main {
         }
         catch (Exception e) {
             ioService.outputData(
-                    messageSource.getMessage("error.testprocessor", new Object[]{e.getMessage()}) );
+                    messageSource.getMessage("error.testprocessor", e.getMessage()));
             e.printStackTrace();
         }
     }

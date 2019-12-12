@@ -1,4 +1,4 @@
-package ru.otus.avalieva.testing.impl;
+package ru.otus.avalieva.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

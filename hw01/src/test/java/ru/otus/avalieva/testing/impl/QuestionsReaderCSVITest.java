@@ -25,7 +25,7 @@ public class QuestionsReaderCSVITest {
         final String incorrectFilename = "filename";
         QuestionsReader questionsReader = new QuestionsCSVReaderImpl(incorrectFilename, messageService);
         String errorMsg = "Error";
-        when(messageService.getMessage("error.cannot.get.questions", new Object[]{incorrectFilename}))
+        when(messageService.getMessage("error.cannot.get.questions", incorrectFilename))
                 .thenReturn(errorMsg);
 
         var exc = Assertions.assertThrows(QuestionReaderException.class, () -> {
@@ -34,7 +34,7 @@ public class QuestionsReaderCSVITest {
         assertEquals(errorMsg, exc.getMessage());
 
         verify(messageService, times(1))
-                .getMessage("error.cannot.get.questions", new Object[]{incorrectFilename});
+                .getMessage("error.cannot.get.questions", incorrectFilename);
     }
 
     private Question expectedQuestion() {
@@ -66,7 +66,7 @@ public class QuestionsReaderCSVITest {
         QuestionsReader questionsReader = new QuestionsCSVReaderImpl(filename, messageService);
 
         String errorMsg = "Error";
-        when(messageService.getMessage("error.cannot.get.questions", new Object[]{filename}))
+        when(messageService.getMessage("error.cannot.get.questions", filename))
                 .thenReturn(errorMsg);
 
         var exc = Assertions.assertThrows(QuestionReaderException.class, () -> {
@@ -75,7 +75,7 @@ public class QuestionsReaderCSVITest {
         assertEquals(errorMsg, exc.getMessage());
 
         verify(messageService, times(1))
-                .getMessage("error.cannot.get.questions", new Object[]{filename});
+                .getMessage("error.cannot.get.questions", filename);
 
     }
 }

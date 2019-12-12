@@ -23,11 +23,13 @@ public class QuestionsCSVReaderImpl implements QuestionsReader {
                                   final MessageService messageService){
         this.filename = filename;
         this.messageService = messageService;
+
     }
 
     @Override
     public List<Question> getQuestions() {
-        try (InputStream inputStream = QuestionsCSVReaderImpl.class.getClassLoader().getResourceAsStream(filename);
+        try (InputStream inputStream = QuestionsCSVReaderImpl.class.
+                getClassLoader().getResourceAsStream(filename);
              final Reader reader = new InputStreamReader(inputStream)){
 
             CsvToBean<QuestionDto> csvToBean = new CsvToBeanBuilder(reader)
@@ -44,8 +46,7 @@ public class QuestionsCSVReaderImpl implements QuestionsReader {
         }
         catch (Exception e){
             throw new QuestionReaderException(
-                    messageService.getMessage("error.cannot.get.questions",
-                            new Object[]{filename}),
+                    messageService.getMessage("error.cannot.get.questions", filename),
                     e);
         }
     }

@@ -10,7 +10,7 @@ import java.util.Locale;
 @Service
 public class MessageServiceImpl implements MessageService {
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     private final Locale locale;
 
@@ -19,7 +19,6 @@ public class MessageServiceImpl implements MessageService {
         locale = getLocale(localValue);
         this.messageSource = messageSource;
     }
-
 
     private Locale getLocale(String localValue)
     {
@@ -30,7 +29,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public String getMessage(String messageId, Object[] objs) {
+    public String getMessage(String messageId, Object... objs) {
         return messageSource.getMessage(messageId, objs, locale);
     }
 
