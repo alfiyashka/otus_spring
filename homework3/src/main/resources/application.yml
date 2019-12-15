@@ -1,0 +1,12 @@
+test:
+   filename: questions/questions_en.csv
+locale:
+   data: ru-RU
+
+server:
+  port: 8090
+spring:
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    use-code-as-default-message: true
