@@ -22,4 +22,6 @@ public class QuestionDto {
 
     @CsvBindByPosition(position = 5)
     private int correctAnswerNumber;
+
 }
+
