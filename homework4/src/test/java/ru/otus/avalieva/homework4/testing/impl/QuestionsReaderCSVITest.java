@@ -1,15 +1,16 @@
-package com.avalieva.homework3.ru.otus.avalieva.testing;
+package ru.otus.avalieva.homework4.testing.impl;
 
-import com.avalieva.homework3.ru.otus.avalieva.TestingApplication;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.QuestionsCSVReaderImpl;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.exception.QuestionReaderException;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.model.Question;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.properties.LocaleSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import ru.otus.avalieva.homework4.TestingApplication;
+import ru.otus.avalieva.homework4.testing.MessageService;
+import ru.otus.avalieva.homework4.testing.QuestionsReader;
+import ru.otus.avalieva.homework4.testing.impl.configuration.LocaleSettings;
+import ru.otus.avalieva.homework4.testing.impl.exception.QuestionReaderException;
+import ru.otus.avalieva.homework4.testing.impl.model.Question;
 
 import java.util.HashMap;
 import java.util.Map;

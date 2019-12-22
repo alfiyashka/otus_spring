@@ -1,9 +1,9 @@
-package com.avalieva.homework3.ru.otus.avalieva.testing.impl;
+package ru.otus.avalieva.homework4.testing.impl;
 
-import com.avalieva.homework3.ru.otus.avalieva.testing.MessageService;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.properties.LocaleSettings;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import ru.otus.avalieva.homework4.testing.MessageService;
+import ru.otus.avalieva.homework4.testing.impl.configuration.LocaleSettings;
 
 import java.util.Locale;
 
@@ -23,11 +23,12 @@ public class MessageServiceImpl implements MessageService {
     private Locale getLocale(LocaleSettings localeSettings)
     {
         if (localeSettings.getCountry() == null || localeSettings.getCountry().isEmpty()
-        || localeSettings.getLanguage() == null || localeSettings.getLanguage().isEmpty()) {
+                || localeSettings.getLanguage() == null || localeSettings.getLanguage().isEmpty()) {
             return Locale.getDefault();
         }
         return new Locale(localeSettings.getLanguage(), localeSettings.getCountry());
     }
+
 
     @Override
     public String getMessage(String messageId, Object... objs) {

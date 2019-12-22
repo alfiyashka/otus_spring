@@ -1,16 +1,15 @@
-package com.avalieva.homework3.ru.otus.avalieva.testing.impl;
+package ru.otus.avalieva.homework4.testing.impl;
 
-import com.avalieva.homework3.ru.otus.avalieva.testing.MessageService;
-import com.avalieva.homework3.ru.otus.avalieva.testing.QuestionsReader;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.dto.QuestionDto;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.dto.QuestionDtoConverter;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.exception.QuestionReaderException;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.model.Question;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.properties.LocaleSettings;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.otus.avalieva.homework4.testing.MessageService;
+import ru.otus.avalieva.homework4.testing.QuestionsReader;
+import ru.otus.avalieva.homework4.testing.impl.configuration.LocaleSettings;
+import ru.otus.avalieva.homework4.testing.impl.dto.QuestionDto;
+import ru.otus.avalieva.homework4.testing.impl.dto.QuestionDtoConverter;
+import ru.otus.avalieva.homework4.testing.impl.exception.QuestionReaderException;
+import ru.otus.avalieva.homework4.testing.impl.model.Question;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

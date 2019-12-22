@@ -1,7 +1,7 @@
 locale:
-   language: ru
-   country: RU
-   filename: questions/questions_en.csv
+  language: ru
+  country: RU
+  filename: questions/questions_en.csv
 
 spring:
   messages:
