@@ -2,10 +2,10 @@ package ru.otus.avalieva.homework4.testing.impl;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.avalieva.homework4.testing.MessageService;
 import ru.otus.avalieva.homework4.testing.QuestionsReader;
+import ru.otus.avalieva.homework4.testing.impl.configuration.LocaleSettings;
 import ru.otus.avalieva.homework4.testing.impl.dto.QuestionDto;
 import ru.otus.avalieva.homework4.testing.impl.dto.QuestionDtoConverter;
 import ru.otus.avalieva.homework4.testing.impl.exception.QuestionReaderException;
@@ -22,9 +22,9 @@ public class QuestionsCSVReaderImpl implements QuestionsReader {
     private final String filename;
     private final MessageService messageService;
 
-    public QuestionsCSVReaderImpl(@Value("${test.filename}") final String filename,
+    public QuestionsCSVReaderImpl(LocaleSettings localeSettings,
                                   final MessageService messageService){
-        this.filename = filename;
+        this.filename = localeSettings.getFilename();
         this.messageService = messageService;
 
     }

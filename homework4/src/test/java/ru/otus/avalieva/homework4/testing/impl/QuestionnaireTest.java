@@ -2,7 +2,10 @@ package ru.otus.avalieva.homework4.testing.impl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import ru.otus.avalieva.homework4.TestingApplication;
 import ru.otus.avalieva.homework4.testing.IOService;
 import ru.otus.avalieva.homework4.testing.MessageService;
 import ru.otus.avalieva.homework4.testing.PersonalInfoCollector;
@@ -15,7 +18,9 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class QuestionnaireTest extends TestWithoutShell {
+@ContextConfiguration(classes = TestingApplication.class)
+@SpringBootTest
+public class QuestionnaireTest {
 
     @MockBean
     protected IOService ioService;
@@ -26,12 +31,8 @@ public class QuestionnaireTest extends TestWithoutShell {
     @MockBean
     private MessageService messageService;
 
-    private final Questionnaire questionnaire;
-
     @Autowired
-    public QuestionnaireTest(Questionnaire questionnaire) {
-        this.questionnaire = questionnaire;
-    }
+    private Questionnaire questionnaire;
 
     @Test
     public void printStartTestInfoTest() {
@@ -204,4 +205,3 @@ public class QuestionnaireTest extends TestWithoutShell {
         verify(ioService, times(1)).outputData(notNumberAnswerMsg);
     }
 }
-

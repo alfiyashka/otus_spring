@@ -2,7 +2,10 @@ package ru.otus.avalieva.homework4.testing.impl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import ru.otus.avalieva.homework4.TestingApplication;
 import ru.otus.avalieva.homework4.testing.IOService;
 import ru.otus.avalieva.homework4.testing.MessageService;
 
@@ -10,7 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 
-public class PersonalInfoCollectorTest extends TestWithoutShell {
+@ContextConfiguration(classes = TestingApplication.class)
+@SpringBootTest
+public class PersonalInfoCollectorTest {
 
     @MockBean
     private IOService ioService;
@@ -18,14 +23,8 @@ public class PersonalInfoCollectorTest extends TestWithoutShell {
     @MockBean
     private MessageService messageService;
 
-    private final PersonalInfoCollectorImpl personalInfoCollector;
-
     @Autowired
-    PersonalInfoCollectorTest(PersonalInfoCollectorImpl personalInfoCollector) {
-
-        this.personalInfoCollector = personalInfoCollector;
-    }
-
+    private PersonalInfoCollectorImpl personalInfoCollector;
 
     @Test
     public void getFirstNameTest() {

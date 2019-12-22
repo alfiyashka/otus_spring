@@ -4,7 +4,12 @@ package ru.otus.avalieva.homework4.testing.impl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.shell.jline.InteractiveShellApplicationRunner;
+import org.springframework.shell.jline.ScriptShellApplicationRunner;
+import org.springframework.test.context.ContextConfiguration;
+import ru.otus.avalieva.homework4.TestingApplication;
 import ru.otus.avalieva.homework4.testing.MessageService;
 import ru.otus.avalieva.homework4.testing.Questionnaire;
 import ru.otus.avalieva.homework4.testing.QuestionsReader;
@@ -21,7 +26,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
 
-public class TestProcessorTest extends TestWithoutShell {
+@ContextConfiguration(classes = TestingApplication.class)
+@SpringBootTest()
+public class TestProcessorTest {
     @MockBean
     private Questionnaire questionnaire;
 
@@ -31,12 +38,8 @@ public class TestProcessorTest extends TestWithoutShell {
     @MockBean
     private MessageService messageService;
 
-    private TestProcessor testProcessor;
-
     @Autowired
-    public TestProcessorTest(TestProcessor testProcessor) {
-        this.testProcessor = testProcessor;
-    }
+    private TestProcessor testProcessor;
 
     private List<Question> generateQuestions() {
         List<Question> questions = new ArrayList<>();
