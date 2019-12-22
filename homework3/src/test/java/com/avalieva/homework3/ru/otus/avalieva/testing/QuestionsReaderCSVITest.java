@@ -4,13 +4,12 @@ import com.avalieva.homework3.ru.otus.avalieva.TestingApplication;
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.QuestionsCSVReaderImpl;
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.exception.QuestionReaderException;
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.model.Question;
+import com.avalieva.homework3.ru.otus.avalieva.testing.impl.properties.LocaleSettings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,21 +18,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
-@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestingApplication.class)
 @SpringBootTest
 public class QuestionsReaderCSVITest {
     @MockBean
     private MessageService messageService;
 
-    public QuestionsReaderCSVITest() {
-
-    }
+    @MockBean
+    private LocaleSettings localeSettings;
 
     @Test
     public void getQuestionsFailed() {
         final String incorrectFilename = "filename";
-        QuestionsReader questionsReader = new QuestionsCSVReaderImpl(incorrectFilename, messageService);
+        when(localeSettings.getFilename()).thenReturn(incorrectFilename);
+
+        QuestionsReader questionsReader = new QuestionsCSVReaderImpl(localeSettings, messageService);
         String errorMsg = "Error";
         when(messageService.getMessage("error.cannot.get.questions", incorrectFilename))
                 .thenReturn(errorMsg);
@@ -63,7 +62,8 @@ public class QuestionsReaderCSVITest {
     @Test
     public void getQuestionsTest() {
         final String filename = "test_questions.csv";
-        QuestionsReader questionsReader = new QuestionsCSVReaderImpl(filename, messageService);
+        when(localeSettings.getFilename()).thenReturn(filename);
+        QuestionsReader questionsReader = new QuestionsCSVReaderImpl(localeSettings, messageService);
 
         var result = questionsReader.getQuestions();
 
@@ -73,7 +73,8 @@ public class QuestionsReaderCSVITest {
     @Test
     public void getQuestionsTestFailedIncorrectFile() {
         final String filename = "incorrect.csv";
-        QuestionsReader questionsReader = new QuestionsCSVReaderImpl(filename, messageService);
+        when(localeSettings.getFilename()).thenReturn(filename);
+        QuestionsReader questionsReader = new QuestionsCSVReaderImpl(localeSettings, messageService);
 
         String errorMsg = "Error";
         when(messageService.getMessage("error.cannot.get.questions", filename))

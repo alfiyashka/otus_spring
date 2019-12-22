@@ -6,12 +6,10 @@ import com.avalieva.homework3.ru.otus.avalieva.testing.impl.exception.TestProces
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.model.Question;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +20,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
 
-@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestingApplication.class)
 @SpringBootTest
 public class TestProcessorTest {
@@ -35,12 +32,8 @@ public class TestProcessorTest {
     @MockBean
     private MessageService messageService;
 
-    private TestProcessor testProcessor;
-
     @Autowired
-    public TestProcessorTest(TestProcessor testProcessor) {
-        this.testProcessor = testProcessor;
-    }
+    private TestProcessor testProcessor;
 
     private List<Question> generateQuestions() {
         List<Question> questions = new ArrayList<>();

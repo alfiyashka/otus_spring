@@ -1,7 +1,7 @@
 package com.avalieva.homework3.ru.otus.avalieva.testing.impl;
 
 import com.avalieva.homework3.ru.otus.avalieva.testing.MessageService;
-import org.springframework.beans.factory.annotation.Value;
+import com.avalieva.homework3.ru.otus.avalieva.testing.impl.properties.LocaleSettings;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +14,20 @@ public class MessageServiceImpl implements MessageService {
 
     private final Locale locale;
 
-    MessageServiceImpl(@Value("${locale.data}") String localValue,
+    MessageServiceImpl(LocaleSettings localeSettings,
                        MessageSource messageSource) {
-        locale = getLocale(localValue);
+        locale = getLocale(localeSettings);
         this.messageSource = messageSource;
     }
 
-    private Locale getLocale(String localValue)
+    private Locale getLocale(LocaleSettings localeSettings)
     {
-        if (localValue == null || localValue.isEmpty()) {
+        if (localeSettings.getCountry() == null || localeSettings.getCountry().isEmpty()
+        || localeSettings.getLanguage() == null || localeSettings.getLanguage().isEmpty()) {
             return Locale.getDefault();
         }
 
-        return Locale.forLanguageTag(localValue);
+        return new Locale(localeSettings.getLanguage(), localeSettings.getCountry());
     }
 
     @Override

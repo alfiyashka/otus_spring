@@ -1,10 +1,8 @@
-test:
-   filename: questions/questions_en.csv
 locale:
-   data: ru-RU
+   language: ru
+   country: RU
+   filename: questions/questions_en.csv
 
-server:
-  port: 8090
 spring:
   messages:
     basename: messages/messages

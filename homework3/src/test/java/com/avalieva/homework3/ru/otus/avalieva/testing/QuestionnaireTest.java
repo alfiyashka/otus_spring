@@ -3,12 +3,10 @@ package com.avalieva.homework3.ru.otus.avalieva.testing;
 import com.avalieva.homework3.ru.otus.avalieva.TestingApplication;
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.model.Question;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +14,6 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestingApplication.class)
 @SpringBootTest
 public class QuestionnaireTest {
@@ -30,12 +27,8 @@ public class QuestionnaireTest {
     @MockBean
     private MessageService messageService;
 
-    private final Questionnaire questionnaire;
-
     @Autowired
-    public QuestionnaireTest(Questionnaire questionnaire) {
-        this.questionnaire = questionnaire;
-    }
+    private Questionnaire questionnaire;
 
     @Test
     public void printStartTestInfoTest() {

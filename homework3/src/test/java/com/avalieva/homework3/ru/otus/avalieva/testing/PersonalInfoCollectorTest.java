@@ -3,17 +3,14 @@ package com.avalieva.homework3.ru.otus.avalieva.testing;
 import com.avalieva.homework3.ru.otus.avalieva.TestingApplication;
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.PersonalInfoCollectorImpl;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestingApplication.class)
 @SpringBootTest
 public class PersonalInfoCollectorTest {
@@ -24,14 +21,8 @@ public class PersonalInfoCollectorTest {
     @MockBean
     private MessageService messageService;
 
-    private final PersonalInfoCollectorImpl personalInfoCollector;
-
     @Autowired
-    PersonalInfoCollectorTest(PersonalInfoCollectorImpl personalInfoCollector) {
-
-        this.personalInfoCollector = personalInfoCollector;
-    }
-
+    private PersonalInfoCollectorImpl personalInfoCollector;
 
     @Test
     public void getFirstNameTest() {

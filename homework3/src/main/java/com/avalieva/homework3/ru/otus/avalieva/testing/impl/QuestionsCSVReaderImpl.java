@@ -6,6 +6,7 @@ import com.avalieva.homework3.ru.otus.avalieva.testing.impl.dto.QuestionDto;
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.dto.QuestionDtoConverter;
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.exception.QuestionReaderException;
 import com.avalieva.homework3.ru.otus.avalieva.testing.impl.model.Question;
+import com.avalieva.homework3.ru.otus.avalieva.testing.impl.properties.LocaleSettings;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +23,9 @@ public class QuestionsCSVReaderImpl implements QuestionsReader {
     private final String filename;
     private final MessageService messageService;
 
-    public QuestionsCSVReaderImpl(@Value("${test.filename}") final String filename,
+    public QuestionsCSVReaderImpl(LocaleSettings localeSettings,
                                   final MessageService messageService){
-        this.filename = filename;
+        this.filename = localeSettings.getFilename();
         this.messageService = messageService;
 
     }
