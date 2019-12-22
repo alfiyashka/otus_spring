@@ -1,15 +1,17 @@
-package com.avalieva.homework3.ru.otus.avalieva.testing;
+package ru.otus.avalieva.homework4.testing.impl;
 
-import com.avalieva.homework3.ru.otus.avalieva.TestingApplication;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.PersonalInfoCollectorImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import ru.otus.avalieva.homework4.TestingApplication;
+import ru.otus.avalieva.homework4.testing.IOService;
+import ru.otus.avalieva.homework4.testing.MessageService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+
 
 @ContextConfiguration(classes = TestingApplication.class)
 @SpringBootTest

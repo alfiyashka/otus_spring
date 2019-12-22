@@ -1,15 +1,21 @@
-package com.avalieva.homework3.ru.otus.avalieva.testing;
+package ru.otus.avalieva.homework4.testing.impl;
 
-import com.avalieva.homework3.ru.otus.avalieva.TestingApplication;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.TestProcessorImpl;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.exception.TestProcessorException;
-import com.avalieva.homework3.ru.otus.avalieva.testing.impl.model.Question;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.shell.jline.InteractiveShellApplicationRunner;
+import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.ContextConfiguration;
+import ru.otus.avalieva.homework4.TestingApplication;
+import ru.otus.avalieva.homework4.testing.MessageService;
+import ru.otus.avalieva.homework4.testing.Questionnaire;
+import ru.otus.avalieva.homework4.testing.QuestionsReader;
+import ru.otus.avalieva.homework4.testing.TestProcessor;
+import ru.otus.avalieva.homework4.testing.impl.exception.TestProcessorException;
+import ru.otus.avalieva.homework4.testing.impl.model.Question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +27,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
 
 @ContextConfiguration(classes = TestingApplication.class)
-@SpringBootTest
+@SpringBootTest()
 public class TestProcessorTest {
     @MockBean
     private Questionnaire questionnaire;
