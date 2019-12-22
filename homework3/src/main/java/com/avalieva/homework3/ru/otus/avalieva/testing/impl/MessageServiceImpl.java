@@ -26,7 +26,6 @@ public class MessageServiceImpl implements MessageService {
         || localeSettings.getLanguage() == null || localeSettings.getLanguage().isEmpty()) {
             return Locale.getDefault();
         }
-
         return new Locale(localeSettings.getLanguage(), localeSettings.getCountry());
     }
 
