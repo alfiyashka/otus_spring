@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Author {
-    Long id;
-    String firstName;
-    String lastName;
-    String phoneNumber;
-    String email;
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
+    private String email;
 
     public String fullName() {
         return String.format("%s %s", firstName, lastName);

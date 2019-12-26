@@ -6,11 +6,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Book {
-    Long isbn;
-    String name;
-    int publishingYear;
-    Author author;
-    Genre genre;
+    private long isbn;
+    private String name;
+    private int publishingYear;
+    private Author author;
+    private Genre genre;
 
     public Book(Long isbn, String name, int publishingYear, Long authorId, Long genreId) {
         this.isbn = isbn;

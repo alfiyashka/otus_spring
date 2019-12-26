@@ -26,7 +26,7 @@ public class BookDaoJdbc implements BookDao {
     @Override
     public List<Book> allBooks() {
         return jdbcOperations.query(
-                "select * from book b, author a, genre g where b.author_id = a.id and b.genre_id = g.id",
+                "select * from book b join author a on b.author_id = a.id join genre g on b.genre_id = g.id",
                 new BookMapper());
     }
 
@@ -45,7 +45,7 @@ public class BookDaoJdbc implements BookDao {
     public Book findBookByIsbn(long isbn) {
         Map<String, Object> params = Collections.singletonMap("isbn", isbn);
         return jdbcOperations.queryForObject(
-                "select * from book b, author a, genre g where b.author_id = a.id and b.genre_id = g.id and b.isbn = :isbn",
+                "select * from book b join author a on b.author_id = a.id join genre g on b.genre_id = g.id where b.isbn = :isbn",
                 params, new BookMapper()
         );
     }
@@ -55,7 +55,7 @@ public class BookDaoJdbc implements BookDao {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
         return jdbcOperations.query(
-                "select * from book b, author a, genre g where b.author_id = a.id and b.genre_id = g.id and b.name like :name",
+                "select * from book b join author a on b.author_id = a.id join genre g on b.genre_id = g.id where b.name like :name",
                 paramMap, new BookMapper()
         );
     }
@@ -65,7 +65,7 @@ public class BookDaoJdbc implements BookDao {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("genre", genre);
         return jdbcOperations.query(
-                "select * from book b, author a, genre g where b.author_id = a.id and b.genre_id = g.id and g.genre_name = :genre",
+                "select * from book b join author a on b.author_id = a.id join genre g on b.genre_id = g.id where g.genre_name = :genre",
                 paramMap, new BookMapper()
         );
     }
@@ -76,7 +76,7 @@ public class BookDaoJdbc implements BookDao {
         paramMap.put("firstname", firstName);
         paramMap.put("lastname", lastName);
         return jdbcOperations.query(
-                "select * from book b, author a, genre g where b.author_id = a.id and b.genre_id = g.id and a.firstname = :firstname and a.lastname = :lastname",
+                "select * from book b join author a on b.author_id = a.id join genre g on b.genre_id = g.id where a.firstname = :firstname and a.lastname = :lastname",
                 paramMap, new BookMapper()
         );
     }
@@ -94,7 +94,7 @@ public class BookDaoJdbc implements BookDao {
     private static class BookMapper implements RowMapper<Book> {
         @Override
         public Book mapRow(ResultSet resultSet, int i) throws SQLException {
-            Long isbn = resultSet.getLong("isbn");
+            long isbn = resultSet.getLong("isbn");
             String name = resultSet.getString("name");
             int publishYear = resultSet.getInt("publishing_year");
 
