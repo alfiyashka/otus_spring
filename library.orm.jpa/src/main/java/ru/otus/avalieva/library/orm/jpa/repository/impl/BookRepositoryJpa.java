@@ -22,7 +22,7 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public List<Book> getAll() {
         TypedQuery<Book> query = em.createQuery(
-                "select b from Book b",
+                "select b from Book b JOIN FETCH b.author a JOIN FETCH b.genre g",
                 Book.class);
         return query.getResultList();
     }
@@ -40,7 +40,7 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public List<Book> findByName(String name) {
         TypedQuery<Book> query = em.createQuery(
-                "select b from Book b where b.name like :name",
+                "select b from Book b JOIN FETCH b.author a JOIN FETCH b.genre g where b.name like :name",
                 Book.class);
         query.setParameter("name", name);
         return query.getResultList();
@@ -49,7 +49,7 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public List<Book> findByGenre(String genre) {
         TypedQuery<Book> query = em.createQuery(
-                "select b from Book b JOIN FETCH b.genre g where g.genreName = :genre", Book.class);
+                "select b from Book b JOIN FETCH b.author a JOIN FETCH b.genre g where g.genreName = :genre", Book.class);
         query.setParameter("genre", genre);
         return query.getResultList();
     }
@@ -57,7 +57,7 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public List<Book> findByAuthor(String firstName, String lastName) {
         TypedQuery<Book>  query = em.createQuery(
-                "select b from Book b JOIN FETCH b.author a where a.firstName = :first_name and a.lastName = :last_name",
+                "select b from Book b JOIN FETCH b.genre g JOIN FETCH b.author a where a.firstName = :first_name and a.lastName = :last_name",
                 Book.class);
         query.setParameter("first_name", firstName);
         query.setParameter("last_name", lastName);

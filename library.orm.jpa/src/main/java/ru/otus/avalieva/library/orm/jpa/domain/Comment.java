@@ -10,6 +10,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table
+@NamedEntityGraph(name = "CommentWithBook",
+        attributeNodes = {
+        @NamedAttributeNode(value = "book", subgraph = "bookGraph")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "bookGraph",
+                        attributeNodes = {
+                                @NamedAttributeNode(value = "author"),
+                                @NamedAttributeNode(value = "genre")
+                        }
+                )
+        })
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

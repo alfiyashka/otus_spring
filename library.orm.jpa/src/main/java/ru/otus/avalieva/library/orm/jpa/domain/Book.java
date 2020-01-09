@@ -29,7 +29,7 @@ public class Book {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    public Book(long isbn, String name, int publishingYear, Long authorId, Long genreId) {
+    public Book(long isbn, String name, int publishingYear, long authorId, long genreId) {
         this.isbn = isbn;
         this.name = name;
         this.publishingYear = publishingYear;
