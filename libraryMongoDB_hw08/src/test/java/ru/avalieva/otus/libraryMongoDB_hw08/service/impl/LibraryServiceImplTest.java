@@ -1,6 +1,5 @@
 package ru.avalieva.otus.libraryMongoDB_hw08.service.impl;
 
-import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -8,23 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTestContextBootstrapper;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.BootstrapWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.avalieva.otus.libraryMongoDB_hw08.LibraryMongoDbHw08Application;
-import ru.avalieva.otus.libraryMongoDB_hw08.configuration.MongoSettings;
-import ru.avalieva.otus.libraryMongoDB_hw08.configuration.MongockConfiguration;
 import ru.avalieva.otus.libraryMongoDB_hw08.domain.Author;
 import ru.avalieva.otus.libraryMongoDB_hw08.domain.Book;
 import ru.avalieva.otus.libraryMongoDB_hw08.domain.Comment;
@@ -37,15 +25,12 @@ import ru.avalieva.otus.libraryMongoDB_hw08.service.IOService;
 import ru.avalieva.otus.libraryMongoDB_hw08.service.LibraryService;
 import ru.avalieva.otus.libraryMongoDB_hw08.service.MessageService;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration")
