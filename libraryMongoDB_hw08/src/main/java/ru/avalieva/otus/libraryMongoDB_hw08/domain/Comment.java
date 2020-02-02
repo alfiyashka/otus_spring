@@ -17,5 +17,5 @@ public class Comment {
     private String comment;
 
     @DBRef
-    Book book;
+    private Book book;
 }
