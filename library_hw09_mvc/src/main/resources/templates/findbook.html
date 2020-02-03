@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Search a book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        .books, .books td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+            margin-top: 10px;
+        }
+
+
+         a.button{
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: white;
+           font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<form th:object="${book}" th:action="@{/book/}"  method="post" action="findbook.html">
+    <h1>Search a book:</h1>
+    <div>
+        <input type="text" name="subject" th:field="*{name}">
+        <input type="submit" value="Search">
+    </div>
+</form>
+
+<table class="books">
+    <tr>
+        <th>ISBN</th>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Publishing year</th>
+        <th>Genre</th>
+        <th>Comments</th>
+    </tr>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.isbn}">1</td>
+        <td th:text="${book.name}">War and Peace</td>
+        <td th:text="${book.author.fullName()}">Lef Tolstoy</td>
+        <td th:text="${book.publishingYear}">1991</td>
+        <td th:text="${book.genre.genreName}">DRAMA</td>
+        <td>
+            <a th:href="@{/comment/book(id=${book.isbn})}" href="comments.html">Click here</a>
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>

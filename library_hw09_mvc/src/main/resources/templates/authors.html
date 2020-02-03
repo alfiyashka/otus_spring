@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all authors</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .authors, .authors td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+        }
+
+        a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: white;
+           font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<h1>Authors:</h1>
+<table class="authors">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Author full name:</th>
+        <th>Phone:</th>
+        <th>Email:</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="author : ${authors}">
+        <td th:text="${author.id}">1</td>
+        <td th:text="${author.fullName()}">Drama</td>
+        <td th:text="${author.phoneNumber}">Drama</td>
+        <td th:text="${author.email}">Drama</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
