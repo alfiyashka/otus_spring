@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Search a book</title>
+    <title>Search a book by name</title>
     <style type="text/css">
         body {
             padding: 50px;
@@ -41,7 +41,7 @@
 <a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
 
 <form th:object="${book}" th:action="@{/book/}"  method="post" action="findbook.html">
-    <h1>Search a book:</h1>
+    <h1>Search a book by name</h1>
     <div>
         <input type="text" name="subject" th:field="*{name}">
         <input type="submit" value="Search">

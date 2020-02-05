@@ -155,18 +155,12 @@ public class LibraryControllerTest {
     public void newCommentForBookTest() throws Exception {
         long bookISBN = 1L;
         CommentDTO commentDTO = new CommentDTO("COMMENT");
-        Comment comment = new Comment(1L, commentDTO.getComment(), new Book());
-        List<Comment> comments = new ArrayList<>();
-        comments.add(comment);
         doNothing().when(libraryService).addBookComment(bookISBN, commentDTO.getComment());
-        when(libraryService.findCommentByBookId(bookISBN)).thenReturn(comments);
 
         this.mvc.perform(post("/add/comment/book?id=1").flashAttr("commentDTO", commentDTO))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("comments", comments));
+                .andExpect(status().isFound());
 
         verify(libraryService, times(1)).addBookComment(bookISBN, commentDTO.getComment());
-        verify(libraryService, times(1)).findCommentByBookId(bookISBN);
     }
 
     @Test
@@ -181,7 +175,6 @@ public class LibraryControllerTest {
                 .andExpect(model().attribute("message", exception.getMessage()));
 
         verify(libraryService, times(1)).addBookComment(bookISBN, commentDTO.getComment());
-        verify(libraryService, never()).findCommentByBookId(anyLong());
     }
 
     @Test
@@ -218,20 +211,15 @@ public class LibraryControllerTest {
         Genre genre = new Genre(1,  "GENRE");
         Book book = new Book(1, "NEW BOOK", 1990, author, genre);
         BookDTO bookDTO = BookDtoConverter.convert(book);
-        List<Book> bookList = new ArrayList<>();
-        bookList.add(book);
-        when(libraryService.allBooks()).thenReturn(bookList);
         when(libraryService.findAuthorByID(1)).thenReturn(author);
         when(libraryService.findGenreByID(1)).thenReturn(genre);
         doNothing().when(libraryService).addNewBook(book);
 
         this.mvc.perform(post("/book/add").flashAttr("bookDTO", bookDTO))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("books", bookList));
+                .andExpect(status().isFound());
 
         verify(libraryService, times(1)).findAuthorByID(1);
         verify(libraryService, times(1)).findGenreByID(1);
-        verify(libraryService, times(1)).allBooks();
         verify(libraryService, times(1)).addNewBook(book);
     }
 
@@ -253,7 +241,6 @@ public class LibraryControllerTest {
         verify(libraryService, times(1)).findAuthorByID(1);
         verify(libraryService, times(1)).findGenreByID(1);
         verify(libraryService, times(1)).addNewBook(book);
-        verify(libraryService, never()).allBooks();
     }
 
     @Test
@@ -262,20 +249,15 @@ public class LibraryControllerTest {
         Genre genre = new Genre(1,  "GENRE");
         Book book = new Book(1, "NEW BOOK", 1990, author, genre);
         BookDTO bookDTO = BookDtoConverter.convert(book);
-        List<Book> bookList = new ArrayList<>();
-        bookList.add(book);
-        when(libraryService.allBooks()).thenReturn(bookList);
         when(libraryService.findAuthorByID(1)).thenReturn(author);
         when(libraryService.findGenreByID(1)).thenReturn(genre);
         doNothing().when(libraryService).addNewBook(book);
 
         this.mvc.perform(post("/book/edit").flashAttr("bookDTO", bookDTO))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("books", bookList));
+                .andExpect(status().isFound());
 
         verify(libraryService, times(1)).findAuthorByID(1);
         verify(libraryService, times(1)).findGenreByID(1);
-        verify(libraryService, times(1)).allBooks();
         verify(libraryService, times(1)).addNewBook(book);
     }
 
@@ -324,30 +306,25 @@ public class LibraryControllerTest {
     public void deleteBookTest() throws Exception {
         long isbn = 1;
         Book book = new Book(isbn, "NEW BOOK", 1990, new Author(), new Genre());
-        List<Book> bookList = new ArrayList<>();
-        bookList.add(book);
-        when(libraryService.allBooks()).thenReturn(bookList);
         doNothing().when(libraryService).deleteBook(isbn);
 
-        this.mvc.perform(get("/book/delete/?id=1"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("books", bookList));
+        this.mvc.perform(post("/book/delete/").flashAttr("book", book))
+                .andExpect(status().isFound());
 
         verify(libraryService, times(1)).deleteBook(isbn);
-        verify(libraryService, times(1)).allBooks();
     }
 
     @Test
     public void deleteBookTestFailed() throws Exception {
         long isbn = 1;
+        Book book = new Book(isbn, "NEW BOOK", 1990, new Author(), new Genre());
         LibraryException exception = new LibraryException("error");
         doThrow(exception).when(libraryService).deleteBook(isbn);
 
-        this.mvc.perform(get("/book/delete/?id=1"))
+        this.mvc.perform(post("/book/delete/").flashAttr("book", book))
                 .andExpect(status().isInternalServerError())
                 .andExpect(model().attribute("message", exception.getMessage()));
 
         verify(libraryService, times(1)).deleteBook(isbn);
-        verify(libraryService, never()).allBooks();
     }
 }

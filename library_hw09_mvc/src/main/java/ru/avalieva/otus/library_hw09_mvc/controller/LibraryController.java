@@ -3,10 +3,7 @@ package ru.avalieva.otus.library_hw09_mvc.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.avalieva.otus.library_hw09_mvc.domain.Author;
 import ru.avalieva.otus.library_hw09_mvc.domain.Book;
 import ru.avalieva.otus.library_hw09_mvc.domain.Comment;
@@ -16,6 +13,8 @@ import ru.avalieva.otus.library_hw09_mvc.dto.BookDtoConverter;
 import ru.avalieva.otus.library_hw09_mvc.dto.CommentDTO;
 import ru.avalieva.otus.library_hw09_mvc.service.LibraryService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -35,21 +34,21 @@ public class LibraryController {
     }
 
     @GetMapping("/authors")
-    public String authors(Model model) {
+    public String getAuthorsPage(Model model) {
         List<Author> authors = libraryService.allAuthors();
         model.addAttribute("authors", authors);
         return "authors";
     }
 
     @GetMapping("/genres")
-    public String genres(Model model) {
+    public String getGenresPage(Model model) {
         List<Genre> genres = libraryService.allGenres();
         model.addAttribute("genres", genres);
         return "genres";
     }
 
     @GetMapping("/comment/book")
-    public String commentForBook(@RequestParam("id") long id, Model model) {
+    public String getCommentForBookPage(@RequestParam("id") long id, Model model) {
         List<Comment> comments = libraryService.findCommentByBookId(id);
         model.addAttribute("comments", comments);
         model.addAttribute("bookisbn", Long.toString(id));
@@ -57,23 +56,22 @@ public class LibraryController {
     }
 
     @GetMapping("/add/comment/book")
-    public String newCommentForBookPage(@RequestParam("id") long id, Model model) {
+    public String getNewCommentForBookPage(@RequestParam("id") long id, Model model) {
         model.addAttribute("bookid", id);
         model.addAttribute("commentDTO", new CommentDTO());
         return "newcomment";
     }
 
     @PostMapping("/add/comment/book")
-    public String newCommentForBook(@RequestParam("id") long id, @ModelAttribute CommentDTO commentDTO, Model model) {
+    public void postNewCommentForBookPage(@RequestParam("id") long id, @ModelAttribute CommentDTO commentDTO,
+                                  HttpServletResponse response) throws IOException {
         libraryService.addBookComment(id, commentDTO.getComment());
-        model.addAttribute("bookisbn", id);
-        model.addAttribute("comments", libraryService.findCommentByBookId(id));
-        return "comments";
+        response.sendRedirect("/comment/book?id=" + id);
     }
 
 
     @GetMapping("/book/edit")
-    public String editBook(@RequestParam("id") long id, Model model) {
+    public String geteditBookPage(@RequestParam("id") long id, Model model) {
         Book book = libraryService.findBookByISBN(id);
         BookDTO bookDTO = BookDtoConverter.convert(book);
         model.addAttribute("bookDTO", bookDTO);
@@ -81,42 +79,48 @@ public class LibraryController {
     }
 
     @PostMapping({"/book/add", "/book/edit"})
-    public String addBook(@ModelAttribute BookDTO bookDTO, Model model) {
+    public void addBookToBooksPage(@ModelAttribute BookDTO bookDTO,
+                        HttpServletResponse response) throws IOException {
         Book book = BookDtoConverter.convert(bookDTO);
         Author author = libraryService.findAuthorByID(bookDTO.getAuthorId());
         Genre genre = libraryService.findGenreByID(bookDTO.getGenreId());
         book.setAuthor(author);
         book.setGenre(genre);
         libraryService.addNewBook(book);
-        List<Book> books = libraryService.allBooks();
-        model.addAttribute("books", books);
-        return "books";
+        response.sendRedirect("/books");
     }
 
     @GetMapping({"/book/add"})
-    public String addBookPage(Model model) {
+    public String getaddBookPage(Model model) {
         model.addAttribute("bookDTO", new BookDTO());
         return "newbook";
     }
 
     @GetMapping({"/book"})
-    public String searchBookPage(Model model) {
+    public String getSearchBookPage(Model model) {
         model.addAttribute("book", new Book());
         return "findbook";
     }
 
     @PostMapping({"/book"})
-    public String searchBook(@ModelAttribute Book book, Model model) {
+    public String postSearchBookPage(@ModelAttribute Book book, Model model) {
         List<Book> books = libraryService.findBookByName(book.getName());
         model.addAttribute("books", books);
         return "findbook";
     }
 
     @GetMapping({"/book/delete/"})
-    public String deleteBook(@RequestParam("id") long id, Model model) {
-        libraryService.deleteBook(id);
-        model.addAttribute("books", libraryService.allBooks());
-        return "books";
+    public String getsearchDeletePage(Model model) {
+        model.addAttribute("book", new Book());
+        return "deletebook";
     }
+
+    @PostMapping({"/book/delete/"})
+    public void deleteBookToBooksPage(@ModelAttribute Book book, HttpServletResponse response) throws IOException {
+        libraryService.deleteBook(book.getIsbn());
+        response.sendRedirect("/books/");
+    }
+
+
 
 }

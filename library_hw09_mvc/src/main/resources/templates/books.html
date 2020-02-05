@@ -26,6 +26,7 @@
            margin-top: 10px;
         }
     </style>
+
 </head>
 <body>
 <h1>Library</h1>
@@ -34,6 +35,7 @@
 <a th:href="@{/genres}" href="genres.html" class="button" >Genres List</a>
 <a th:href="@{/book/add}" href="newbook.html" class="button" >Add new book</a>
 <a th:href="@{/book/}" href="findbook.html" class="button" >Search a book</a>
+<a th:href="@{/book/delete/}" href="deletebook.html" class="button" >Delete a book</a>
 
 <h1>Books:</h1>
 <table class="books">
@@ -46,7 +48,6 @@
         <th>Genre</th>
         <th>Comments</th>
         <th>Edit</th>
-        <th>Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -62,11 +63,9 @@
         <td>
             <a th:href="@{/book/edit(id=${book.isbn})}" href="edit.html">Edit</a>
         </td>
-        <td>
-            <a th:href="@{/book/delete/(id=${book.isbn})}" href="books.html">Delete</a>
-        </td>
     </tr>
     </tbody>
 </table>
+
 </body>
 </html>
