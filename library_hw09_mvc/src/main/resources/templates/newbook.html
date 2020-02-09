@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add a new book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+            background: #4E9CAF;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+         a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: white;
+           font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<form id="add-form" action="/book/add" method="post" th:object="${bookDTO}">
+    <h1> Add a new Book</h1>
+
+    <div class="row">
+        <label >Name:</label>
+        <input type="text" class="text-input" th:field="*{name}" />
+    </div>
+
+    <div class="row">
+        <label >Publishing year:</label>
+        <input type="text" class="text-input" th:field="*{publishingYear}" />
+    </div>
+
+    <div class="row">
+        <label >Author id:</label>
+        <input type="text" class="text-input" th:field="*{authorId}" required="true"/>
+    </div>
+
+    <div class="row">
+        <label >Genre id:</label>
+        <input type="text" class="text-input" th:field="*{genreId}" required="true"/>
+    </div>
+
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Delete a book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+         a.button{
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: white;
+           font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+
+<form th:object="${book}" th:action="@{/book/delete/}"  method="post" action="deletebook.html">
+    <h1>Delete a book by isbn:</h1>
+    <div>
+        <input type="text" name="subject" th:field="*{isbn}">
+        <input type="submit" value="Delete">
+    </div>
+</form>
+
+</body>
+</html>
