@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Search a book by name</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        .books, .books td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+           margin-top: 10px;
+
+        }
+
+
+         a.button{
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: white;
+           font-weight: bold;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<form id="findBookForm">
+<fieldset>
+    <legend>Search a book by name:</legend>
+    Name: <input type="text" id="name"><br>
+</fieldset>
+
+<div class="row">
+    <button type="button" onclick="searchBook()">Search</button>
+</div>
+
+<table class="books">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+      function searchBook() {
+        var bookName = document.forms["findBookForm"]["name"].value;
+        $.ajax({
+            url: '/api/book',
+            type: 'GET',
+            data: jQuery.param({ name: bookName}),
+            success: function(booksDTO) {
+                 $('thead').empty()
+                 $('tbody').empty()
+                 if ( booksDTO.length > 0) {
+                    $('thead').append(`
+                       <tr>
+                       <th>ISBN</th>
+                       <th>Name</th>
+                       <th>Author</th>
+                       <th>Publishing year</th>
+                       <th>Genre</th>
+                       <th>Comments</th>
+                      </tr>
+                     `)
+                    booksDTO.forEach(function (bookDTO) {
+                       $('tbody').append(`
+                         <tr>
+                            <td>${bookDTO.isbn}</td>
+                            <td>${bookDTO.name}</td>
+                            <td>${bookDTO.authorFullName}</td>
+                            <td>${bookDTO.publishingYear}</td>
+                            <td>${bookDTO.genre}</td>
+                            <td>
+                            <a href="/comments/book/${bookDTO.isbn}">Click here</a>
+                            </td>
+                          </tr>
+                      `)
+                    })
+                 }
+                 else {
+                     alert("Book with name like as '" + bookName + "' not found")
+                 }
+
+            }
+        });
+    }
+</script>
+
+</form>
+</body>
+</html>

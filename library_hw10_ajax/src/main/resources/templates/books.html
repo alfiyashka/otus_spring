@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books, .books td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+        }
+
+        a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: white;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Library</h1>
+
+<a th:href="@{/authors}" href="authors.html" class="button" >Authors List</a>
+<a th:href="@{/genres}" href="genres.html" class="button" >Genres List</a>
+<a th:href="@{/book/new}" href="newbook.html" class="button" >Add new book</a>
+<a th:href="@{/book/}" href="findbook.html" class="button" >Search a book</a>
+<a th:href="@{/book/delete/}" href="deletebook.html" class="button" >Delete a book</a>
+
+<h1>Books:</h1>
+<table class="books">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    $(function () {
+        $.get('/api/books').done(function (booksDTO) {
+            $('thead').empty()
+            $('tbody').empty()
+            if ( booksDTO.length > 0) {
+                $('thead').append(`
+                   <tr>
+                      <th>ISBN</th>
+                      <th>Name</th>
+                      <th>Author</th>
+                      <th>Publishing year</th>
+                      <th>Genre</th>
+                      <th>Comments</th>
+                      <th>Edit</th>
+                   </tr>
+                 `)
+
+               booksDTO.forEach(function (bookDTO) {
+                  var bookIsbn = bookDTO.isbn
+                  $('tbody').append(`
+                     <tr>
+                        <td>${bookDTO.isbn}</td>
+                        <td>${bookDTO.name}</td>
+                        <td>${bookDTO.authorFullName}</td>
+                        <td>${bookDTO.publishingYear}</td>
+                        <td>${bookDTO.genre}</td>
+                        <td>
+                             <a href="/comments/book/${bookDTO.isbn}">Click here</a>
+                        </td>
+                        <td>
+                             <a href="/book/edit/${bookDTO.isbn}" >Edit</a>
+                        </td>
+                     </tr>
+                  `)
+               });
+            }
+            else {
+             alert("There are no books")
+            }
+        })
+    });
+
+</script>
+
+
+</body>
+</html>
