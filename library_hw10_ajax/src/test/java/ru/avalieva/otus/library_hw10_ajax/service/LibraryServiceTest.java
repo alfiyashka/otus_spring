@@ -352,6 +352,33 @@ public class LibraryServiceTest {
                 .getMessage("book.deleted.error", isbn, exception.getMessage());
     }
 
+    @Test
+    public void deleteCommentTest() {
+        long commentId = 1L;
+        doNothing().when(commentRepository).deleteById(commentId);
+
+        libraryService.deleteComment(commentId);
+
+        verify(commentRepository, times(1)).deleteById(commentId);
+    }
+
+
+    @Test
+    public void deleteCommentTestFailed() {
+        long commentId = 1L;
+        BadSqlGrammarException exception = new BadSqlGrammarException("error", "sql", new SQLException("error"));
+        doThrow(exception).when(commentRepository).deleteById(commentId);
+        when(messageService.getMessage("drop.comment.error", commentId, exception.getMessage()))
+                .thenReturn("Book cannot be deleted");
+
+        var error = Assertions.assertThrows(LibraryException.class, () -> { libraryService.deleteComment(commentId); });
+        Assertions.assertEquals("Book cannot be deleted", error.getMessage());
+
+        verify(commentRepository, times(1)).deleteById(commentId);
+        verify(messageService, times(1))
+                .getMessage("drop.comment.error", commentId, exception.getMessage());
+    }
+
 
     @Test
     public void addCommentTest() {

@@ -40,11 +40,6 @@ public class LibraryPageController {
         return "newbook";
     }
 
-    @GetMapping({"/book/delete/"})
-    public String getDeletePage() {
-        return "deletebook";
-    }
-
     @GetMapping({"/comments/book/{id}"})
     public String getCommentsPage(@PathVariable("id") String id) {
         return "comments";

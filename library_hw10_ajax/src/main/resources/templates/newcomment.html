@@ -20,7 +20,7 @@
            padding: 10px;
            text-align: center;
            border-radius: 5px;
-           color: white;
+           color: black;
            font-weight: bold;
         }
     </style>
@@ -47,15 +47,14 @@
         var url= window.location.pathname
         var urlVariables = url.split('/')
         var bookId = urlVariables.pop()
-        var payload = { comment: comment, bookIsbn: bookId };
-
+        var payload = { comment: comment }
+        var url = '/api/books/' + bookId + '/comment'
         $.ajax({
-            url: '/api/new/comment/book',
+            url: '/api/books/' + bookId + '/comments',
             type: 'POST',
             data: JSON.stringify(payload),
             contentType: "application/json; charset=utf-8",
-	        dataType: "json",
-	        success: function (jqXHR,result) {
+	        success: function () {
                 alert("Comment of book with isbn '" + bookId + "' was added");
                 window.location.href = "/comments/book/" + bookId;
             },

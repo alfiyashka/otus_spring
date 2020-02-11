@@ -22,7 +22,7 @@
            padding: 10px;
            text-align: center;
            border-radius: 5px;
-           color: white;
+           color: black;
            font-weight: bold;
            margin-top: 10px;
         }
@@ -50,7 +50,7 @@
         var urlVariables = url.split('/')
         var bookIsbn = urlVariables.pop()
         $.ajax({
-            url: '/api/comments/' + bookIsbn,
+            url: '/api/books/' + bookIsbn + '/comments',
             type: 'GET',
             success: function(commentsDTO) {
                  $('thead').empty()
@@ -62,12 +62,16 @@
                     $('thead').append(`
                        <tr>
                        <th>Comments</th>
+                       <th>Delete</th>
                       </tr>
                      `)
                     commentsDTO.forEach(function (commentDTO) {
                        $('tbody').append(`
                          <tr>
-                            <td>${commentDTO.comment}</td>
+                            <td>${commentDTO.comment}
+                         </td>
+                         <td>
+                            <a class="button" href="#" onclick="deleteComment(${commentDTO.id}, ${bookIsbn})">Delete</a></td>
                           </tr>
                       `)
                     })
@@ -83,6 +87,21 @@
         var urlVariables = url.split('/')
         var bookIsbn = urlVariables.pop()
         window.location.href = "/add/comment/book/" + bookIsbn;
+    }
+
+    function deleteComment(commentId, bookIsbn) {
+    $.ajax({
+            url: '/api/books/comments/' + commentId,
+            type: 'DELETE',
+            success: function () {
+                alert("Comment of book with isbn '" + bookIsbn + "' was deleted")
+                window.location.href = "/comments/book/" + bookIsbn;
+
+            },
+            error: function (jqXHR, error) {
+                alert("Cannot delete comment of book with isbn '" + bookIsbn + "':" + jqXHR.responseText);
+            }
+        });
     }
 </script>
 </form>

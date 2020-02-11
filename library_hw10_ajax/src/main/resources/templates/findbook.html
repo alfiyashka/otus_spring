@@ -32,7 +32,7 @@
            padding: 10px;
            text-align: center;
            border-radius: 5px;
-           color: white;
+           color: black;
            font-weight: bold;
         }
     </style>
@@ -62,7 +62,7 @@
       function searchBook() {
         var bookName = document.forms["findBookForm"]["name"].value;
         $.ajax({
-            url: '/api/book',
+            url: '/api/books',
             type: 'GET',
             data: jQuery.param({ name: bookName}),
             success: function(booksDTO) {

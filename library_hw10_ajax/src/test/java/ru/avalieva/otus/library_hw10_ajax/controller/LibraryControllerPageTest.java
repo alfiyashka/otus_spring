@@ -52,12 +52,6 @@ public class LibraryControllerPageTest {
     }
 
     @Test
-    public void getDeleteBookPageTest() throws Exception {
-        this.mvc.perform(get("/book/delete/"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     public void getCommentsPageTest() throws Exception {
         this.mvc.perform(get("/comments/book/1"))
                 .andExpect(status().isOk());

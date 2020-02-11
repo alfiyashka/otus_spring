@@ -17,7 +17,7 @@
            padding: 10px;
            text-align: center;
            border-radius: 5px;
-           color: white;
+           color: black;
            font-weight: bold;
         }
     </style>
@@ -51,12 +51,11 @@
         var payload = { isbn: 0, name: bookName, publishingYear: publishYear, authorId: authorId, genreId: genreId };
 
         $.ajax({
-            url: '/api/new/book',
+            url: '/api/books',
             type: 'POST',
             data: JSON.stringify(payload),
-            dataType: 'json',
             contentType: 'application/json; charset=utf-8',
-	        success: function (result) {
+	        success: function () {
                 alert("Book with name '" + bookName + "' was added")
                 window.location.href = "/books";
             },

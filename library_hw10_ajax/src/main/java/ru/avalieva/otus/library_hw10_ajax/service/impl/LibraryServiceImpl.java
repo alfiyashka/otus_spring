@@ -1,6 +1,7 @@
 package ru.avalieva.otus.library_hw10_ajax.service.impl;
 
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Service;
 import ru.avalieva.otus.library_hw10_ajax.domain.Author;
 import ru.avalieva.otus.library_hw10_ajax.domain.Book;
@@ -150,6 +151,17 @@ public class LibraryServiceImpl implements LibraryService {
         catch (Exception e) {
             throw new LibraryException(messageService.getMessage("add.comment.error",
                     isbn, e.getMessage()), e);
+        }
+    }
+
+    @Override
+    public void deleteComment(long commentId) {
+        try {
+            commentRepository.deleteById(commentId);
+        }
+        catch (Exception e) {
+            throw new LibraryException(messageService.getMessage("drop.comment.error",
+                    commentId, e.getMessage()), e);
         }
     }
 

@@ -144,7 +144,7 @@ public class LibraryControllerRestTest {
         String expected = objectMapper.writeValueAsString(comments.stream()
                 .map(CommentDtoConverter::convert).collect(Collectors.toList()));
 
-        MvcResult result = this.mvc.perform(get("/api/comments/" + bookISBN).contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = this.mvc.perform(get( "/api/books/" + bookISBN + "/comments").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         Assertions.assertEquals(expected, result.getResponse().getContentAsString());
@@ -159,7 +159,7 @@ public class LibraryControllerRestTest {
         LibraryException exception = new LibraryException("error");
         when(libraryService.findCommentByBookId(bookISBN)).thenThrow(exception);
 
-        MvcResult result =this.mvc.perform(get("/api/comments/" + bookISBN).contentType(MediaType.APPLICATION_JSON))
+        MvcResult result = this.mvc.perform(get("/api/books/" + bookISBN + "/comments").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         Assertions.assertEquals(exception.getMessage(), result.getResponse().getContentAsString());
@@ -177,7 +177,7 @@ public class LibraryControllerRestTest {
         String expected = objectMapper.writeValueAsString(bookList.stream().map(BookDtoConverter::convert)
                 .collect(Collectors.toList()));
 
-        MvcResult result =this.mvc.perform(get("/api/book?name=" + book.getName()).contentType(MediaType.APPLICATION_JSON))
+        MvcResult result =this.mvc.perform(get("/api/books?name=" + book.getName()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         Assertions.assertEquals(expected,result.getResponse().getContentAsString());
@@ -191,7 +191,7 @@ public class LibraryControllerRestTest {
         LibraryException exception = new LibraryException("error");
         when(libraryService.findBookByName(bookName)).thenThrow(exception);
 
-        MvcResult result =this.mvc.perform(get("/api/book?name=" + bookName).contentType(MediaType.APPLICATION_JSON))
+        MvcResult result =this.mvc.perform(get("/api/books?name=" + bookName).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         Assertions.assertEquals(exception.getMessage(), result.getResponse().getContentAsString());
@@ -206,7 +206,7 @@ public class LibraryControllerRestTest {
 
         String expected = objectMapper.writeValueAsString(BookDtoConverter.convert(book));
 
-        MvcResult result =this.mvc.perform(get("/api/book/" + book.getIsbn()).contentType(MediaType.APPLICATION_JSON))
+        MvcResult result =this.mvc.perform(get("/api/books/" + book.getIsbn()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         Assertions.assertEquals(expected,result.getResponse().getContentAsString());
@@ -220,7 +220,7 @@ public class LibraryControllerRestTest {
         LibraryException exception = new LibraryException("error");
         when(libraryService.findBookByISBN(isbn)).thenThrow(exception);
 
-        MvcResult result =this.mvc.perform(get("/api/book/" + isbn).contentType(MediaType.APPLICATION_JSON))
+        MvcResult result =this.mvc.perform(get("/api/books/" + isbn).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         Assertions.assertEquals(exception.getMessage(), result.getResponse().getContentAsString());
@@ -238,27 +238,7 @@ public class LibraryControllerRestTest {
         when(libraryService.findGenreByID(1)).thenReturn(genre);
         doNothing().when(libraryService).addNewBook(book);
 
-        this.mvc.perform(post("/api/new/book")
-                .content(objectMapper.writeValueAsString(bookDTO))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(libraryService, times(1)).findAuthorByID(1);
-        verify(libraryService, times(1)).findGenreByID(1);
-        verify(libraryService, times(1)).addNewBook(book);
-    }
-
-    @Test
-    public void editBookTest() throws Exception {
-        Author author = new Author(1, "FIRST_NAME", "LAST_NAME", "12324324", "EMAIL");
-        Genre genre = new Genre(1,  "GENRE");
-        Book book = new Book(1, "NEW BOOK", 1990, author, genre);
-        BookDTO bookDTO = BookDtoConverter.convert(book);
-        when(libraryService.findAuthorByID(1)).thenReturn(author);
-        when(libraryService.findGenreByID(1)).thenReturn(genre);
-        doNothing().when(libraryService).addNewBook(book);
-
-        this.mvc.perform(post("/api/edit/book")
+        this.mvc.perform(post("/api/books")
                 .content(objectMapper.writeValueAsString(bookDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -279,7 +259,7 @@ public class LibraryControllerRestTest {
         LibraryException exception = new LibraryException("error");
         doThrow(exception).when(libraryService).addNewBook(book);
 
-        var result = this.mvc.perform(post("/api/new/book")
+        var result = this.mvc.perform(post("/api/books")
                 .content(objectMapper.writeValueAsString(bookDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -294,32 +274,32 @@ public class LibraryControllerRestTest {
     @Test
     public void addNewCommentTest() throws Exception {
         long bookISBN = 1L;
-        CommentDTO commentDTO = new CommentDTO("COMMENT", bookISBN);
-        doNothing().when(libraryService).addBookComment(commentDTO.getBookIsbn(), commentDTO.getComment());
+        CommentDTO commentDTO = new CommentDTO("COMMENT", 1);
+        doNothing().when(libraryService).addBookComment(bookISBN, commentDTO.getComment());
 
-        this.mvc.perform(post("/api/new/comment/book")
+        this.mvc.perform(post("/api/books/" + bookISBN +"/comments")
                 .content(objectMapper.writeValueAsString(commentDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(libraryService, times(1)).addBookComment(commentDTO.getBookIsbn(), commentDTO.getComment());
+        verify(libraryService, times(1)).addBookComment(bookISBN, commentDTO.getComment());
     }
 
     @Test
     public void addNewCommentTestFailed() throws Exception {
         long bookISBN = 1L;
-        CommentDTO commentDTO = new CommentDTO("COMMENT", bookISBN);
+        CommentDTO commentDTO = new CommentDTO("COMMENT", 1);
         LibraryException exception = new LibraryException("error");
-        doThrow(exception).when(libraryService).addBookComment(commentDTO.getBookIsbn(), commentDTO.getComment());
+        doThrow(exception).when(libraryService).addBookComment(bookISBN, commentDTO.getComment());
 
-        var result = this.mvc.perform(post("/api/new/comment/book")
+        var result = this.mvc.perform(post("/api/books/" + bookISBN + "/comments")
                 .content(objectMapper.writeValueAsString(commentDTO))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         Assertions.assertEquals(exception.getMessage(), result.getResponse().getContentAsString());
 
-        verify(libraryService, times(1)).addBookComment(commentDTO.getBookIsbn(), commentDTO.getComment());
+        verify(libraryService, times(1)).addBookComment(bookISBN, commentDTO.getComment());
     }
 
     @Test
@@ -327,7 +307,7 @@ public class LibraryControllerRestTest {
         long bookISBN = 1L;
         doNothing().when(libraryService).deleteBook(bookISBN);
 
-        this.mvc.perform(delete("/api/book/" + bookISBN))
+        this.mvc.perform(delete("/api/books/" + bookISBN))
                 .andExpect(status().isOk());
 
         verify(libraryService, times(1)).deleteBook(bookISBN);
@@ -339,7 +319,7 @@ public class LibraryControllerRestTest {
         LibraryException exception = new LibraryException("error");
         doThrow(exception).when(libraryService).deleteBook(bookISBN);
 
-        var result = this.mvc.perform(delete("/api/book/" + bookISBN))
+        var result = this.mvc.perform(delete("/api/books/" + bookISBN))
                 .andExpect(status().isBadRequest())
                 .andReturn();
         Assertions.assertEquals(exception.getMessage(), result.getResponse().getContentAsString());
@@ -347,4 +327,29 @@ public class LibraryControllerRestTest {
         verify(libraryService, times(1)).deleteBook(bookISBN);
     }
 
+
+    @Test
+    public void deleteCommentTest() throws Exception {
+        long commentId = 1L;
+        doNothing().when(libraryService).deleteComment(commentId);
+
+        this.mvc.perform(delete("/api/books/comments/" + commentId))
+                .andExpect(status().isOk());
+
+        verify(libraryService, times(1)).deleteComment(commentId);
+    }
+
+    @Test
+    public void deleteCommentTestFailed() throws Exception {
+        long commentId = 1L;
+        LibraryException exception = new LibraryException("error");
+        doThrow(exception).when(libraryService).deleteComment(commentId);
+
+        var result = this.mvc.perform(delete("/api/books/comments/" + commentId))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        Assertions.assertEquals(exception.getMessage(), result.getResponse().getContentAsString());
+
+        verify(libraryService, times(1)).deleteComment(commentId);
+    }
 }

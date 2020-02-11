@@ -4,6 +4,6 @@ import ru.avalieva.otus.library_hw10_ajax.domain.Comment;
 
 public class CommentDtoConverter {
     public static CommentDTO convert(Comment comment) {
-        return new CommentDTO(comment.getComment(), comment.getBook().getIsbn());
+        return new CommentDTO(comment.getComment(), comment.getId());
     }
 }

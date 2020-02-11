@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentDTO {
     private String comment;
-    private long bookIsbn;
+    private long id;
 }

@@ -1,8 +1,5 @@
 package ru.avalieva.otus.library_hw10_ajax.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.avalieva.otus.library_hw10_ajax.domain.Author;
 import ru.avalieva.otus.library_hw10_ajax.domain.Book;
@@ -34,12 +31,23 @@ public class LibraryRestController {
         return libraryService.allGenres();
     }
 
-    @GetMapping("/api/comments/{isbn}")
+    @GetMapping("/api/books/{isbn}/comments")
     public List<CommentDTO> getAllCommentsOfBook(@PathVariable("isbn") long isbn) {
         return libraryService.findCommentByBookId(isbn)
                 .stream()
                 .map(CommentDtoConverter::convert)
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping("/api/books/{isbn}/comments")
+    public void addNewComment(@PathVariable("isbn") long isbn,
+                              @RequestBody CommentDTO commentDTO) {
+        libraryService.addBookComment(isbn, commentDTO.getComment());
+    }
+
+    @DeleteMapping("/api/books/comments/{commentId}")
+    public void dropCommentOfBook(@PathVariable("commentId") long commentId) {
+        libraryService.deleteComment(commentId);
     }
 
     @GetMapping("/api/books")
@@ -48,53 +56,30 @@ public class LibraryRestController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/api/book")
-    public List<BookDTO> findBookByName(@RequestParam("name") String bookName) {
+    @GetMapping(value = "/api/books", params = "name")
+    public List<BookDTO> findBookByName(@RequestParam(value = "name", required = true) String bookName) {
         List<Book> bookDTOS = libraryService.findBookByName(bookName);
         return bookDTOS.stream().map(BookDtoConverter::convert)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/api/book/{id}")
+    @GetMapping("/api/books/{id}")
     public BookDTO findBookById(@PathVariable("id") String bookId) {
         return BookDtoConverter.convert(libraryService.findBookByISBN(Long.parseLong(bookId)));
     }
 
-    @PostMapping({"/api/new/book", "/api/edit/book"})
-    public ResponseEntity<String> addNewBook(@RequestBody BookDTO bookDTO) {
-        try {
-            Book book = BookDtoConverter.convert(bookDTO);
-            Author author = libraryService.findAuthorByID(bookDTO.getAuthorId());
-            Genre genre = libraryService.findGenreByID(bookDTO.getGenreId());
-            book.setAuthor(author);
-            book.setGenre(genre);
-            libraryService.addNewBook(book);
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("{}");
-        }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PostMapping({"/api/books"})
+    public void addNewBook(@RequestBody BookDTO bookDTO) {
+        Book book = BookDtoConverter.convert(bookDTO);
+        Author author = libraryService.findAuthorByID(bookDTO.getAuthorId());
+        Genre genre = libraryService.findGenreByID(bookDTO.getGenreId());
+        book.setAuthor(author);
+        book.setGenre(genre);
+        libraryService.addNewBook(book);
     }
 
-    @PostMapping("/api/new/comment/book")
-    public ResponseEntity<String> addNewComment(@RequestBody CommentDTO commentDTO) {
-        try {
-            libraryService.addBookComment(commentDTO.getBookIsbn(), commentDTO.getComment());
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("{}");
-        }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping({"/api/book/{isbn}"})
-    public ResponseEntity<String> deleteBookToBooks(@PathVariable("isbn") long isbn) {
-        try {
-            libraryService.deleteBook(isbn);
-            return ResponseEntity.ok().body("");
-        }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @DeleteMapping({"/api/books/{isbn}"})
+    public void deleteBookToBooks(@PathVariable("isbn") long isbn) {
+        libraryService.deleteBook(isbn);
     }
 }

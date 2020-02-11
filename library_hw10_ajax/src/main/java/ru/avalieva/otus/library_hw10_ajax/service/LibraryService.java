@@ -23,5 +23,7 @@ public interface LibraryService {
     void deleteBook(long isbn);
 
     void addBookComment(long isbn, String comment);
+    void deleteComment(long commentId);
+
     List<Comment> findCommentByBookId(long isbn);
 }
