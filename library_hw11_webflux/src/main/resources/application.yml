@@ -1,0 +1,15 @@
+locale:
+  language: en
+  country: US
+
+spring:
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    use-code-as-default-message: true
+
+  data:
+    mongodb:
+      database: library_db
+      port: 27017
+      host: localhost
