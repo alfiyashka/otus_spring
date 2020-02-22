@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+            background: #4E9CAF;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+         a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<form id="updateBook" >
+    <h1>Book Info:</h1>
+
+    <div class="row">
+        <label for="isbn">ISBN:</label>
+        <input id="isbn" class="text-input" name="isbn" type="text" readonly="readonly" />
+    </div>
+
+    <div class="row">
+        <label for="name">Name:</label>
+        <input id="name" class="text-input" name="name" type="text" value="War and Peace"/>
+    </div>
+
+    <div class="row">
+        <label for="publish">Publishing year:</label>
+        <input id="publish" class="text-input" name="publish" type="text" value="1994"/>
+    </div>
+
+    <div class="row">
+        <label for="author">Author first name:</label>
+        <input id="author" class="text-input" name="author" type="text"  value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="genre">Genre:</label>
+        <input id="genre" class="text-input" name="genre" type="text" value="1"/>
+    </div>
+
+    <div class="row">
+        <button onclick="updateBook()">Update</button>
+    </div>
+</form>
+
+<script>
+window.onload = function(){
+   var url= window.location.pathname
+   var urlVariables = url.split('/')
+   var bookID = urlVariables.pop()
+   console.log(url)
+   $.ajax({
+            url: '/api/books/' + bookID,
+            type: 'GET',
+            success: function(bookDTO) {
+                 document.getElementById("isbn").value =bookDTO.isbn;
+                 document.getElementById("name").value =bookDTO.name;
+                 document.getElementById("publish").value =bookDTO.publishingYear;
+                 document.getElementById("author").value =bookDTO.authorId;
+                 document.getElementById("genre").value =bookDTO.genreId;
+            }
+        });
+   }
+function updateBook() {
+        var bookIsbn = document.forms["updateBook"]["isbn"].value;
+        var bookName = document.forms["updateBook"]["name"].value;
+        var publishYear = document.forms["updateBook"]["publish"].value;
+        var authorId = document.forms["updateBook"]["author"].value;
+        var genreId = document.forms["updateBook"]["genre"].value;
+        var payload = { isbn: bookIsbn, name: bookName, publishingYear: publishYear, authorId: authorId, genreId: genreId };
+
+        $.ajax({
+            url: '/api/books',
+            type: 'POST',
+            data: JSON.stringify(payload),
+            contentType: 'application/json; charset=utf-8',
+	        success: function () {
+                alert("Book with name '" + bookName + "' was updated")
+                window.location.href = "/books";
+            },
+            error: function (jqXHR, error) {
+                alert("Cannot updated book with name '" + bookName + "':" + jqXHR.responseText)
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
