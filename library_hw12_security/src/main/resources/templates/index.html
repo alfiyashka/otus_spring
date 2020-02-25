@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Library</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+         a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<a th:href="@{/login}" href="login.html" class="button" >Login</a>
+<a th:href="@{/newuser}" href="newuser.html" class="button" >Register</a>
+<script>
+</script>
+</body>
+</html>

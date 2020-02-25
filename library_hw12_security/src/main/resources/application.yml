@@ -1,0 +1,19 @@
+locale:
+  language: en
+  country: US
+
+spring:
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    use-code-as-default-message: true
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    initialization-mode: always
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
