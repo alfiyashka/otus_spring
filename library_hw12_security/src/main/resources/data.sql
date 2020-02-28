@@ -28,7 +28,7 @@ INSERT INTO COMMENT VALUES (2, 'Read 3 times', 1);
 
 COMMIT;
 
-INSERT INTO USER VALUES (1, 'admin', '5f4dcc3b5aa765d61d8327deb882cf99'); -- password
-INSERT INTO USER VALUES (2, 'alfiya', '34819d7beeabb9260a5c854bc85b3e44'); -- mypassword
+INSERT INTO USER VALUES (1, 'admin', '$2a$10$46EiMLeacFJq9dj.O5oDzu/CTCtmplo/5.QKQE5spiA9IIerfs72i'); -- password
+INSERT INTO USER VALUES (2, 'alfiya', '$2a$10$hYrTym98OrAfW1N91.7NN.NasRvNH6U1Ly2GmcQVMEPNMiY9107la'); -- mypassword
 
 COMMIT;

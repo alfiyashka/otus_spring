@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
-import ru.avalieva.otus.library_hw12_security.LibraryHw12SecurityApplication;
 import ru.avalieva.otus.library_hw12_security.domain.User;
 import ru.avalieva.otus.library_hw12_security.repository.*;
-import ru.avalieva.otus.library_hw12_security.security.MD5PasswordEncoder;
 import ru.avalieva.otus.library_hw12_security.service.impl.LibraryException;
 import ru.avalieva.otus.library_hw12_security.service.impl.UserServiceImpl;
 
@@ -28,12 +27,11 @@ public class UserServiceTest {
     @MockBean
     private MessageService messageService;
 
-    @MockBean
-    private MD5PasswordEncoder encoder;
-
     @Autowired
     private UserService userService;
 
+    @MockBean
+    private BCryptPasswordEncoder encoder;
 
     @Test
     public void getLoginInfoTest() {
@@ -62,7 +60,7 @@ public class UserServiceTest {
     @Test
     public void addLoginTest() {
         User user = new User(0,  "admin", "password");
-        User userEncoded = new User(0,  "admin", "5f4dcc3b5aa765d61d8327deb882cf99");
+        User userEncoded = new User(0,  "admin", "$2a$10$z7a5d2Lx6Q26dMBND5GiSe3Gassdyn/GmnqSPCabKhoPoNk5AaJGG");
         when(userRepository.save(userEncoded)).thenReturn(userEncoded);
         when(encoder.encode(user.getPassword())).thenReturn(userEncoded.getPassword());
 
@@ -75,7 +73,7 @@ public class UserServiceTest {
     @Test
     public void addLoginTestFailed() {
         User user = new User(0,  "admin", "password");
-        User userEncoded = new User(0,  "admin", "5f4dcc3b5aa765d61d8327deb882cf99");
+        User userEncoded = new User(0,  "admin", "$2a$10$Z9uPKQnoPNcN0hSiKSFJeOaU8vF95SXztU36GyR5RSdDYfJtTcv.K");
         BadSqlGrammarException exception = new BadSqlGrammarException("error", "sql", new SQLException("error"));
         when(userRepository.save(userEncoded)).thenThrow(exception);
         when(messageService.getMessage("user.add.error",

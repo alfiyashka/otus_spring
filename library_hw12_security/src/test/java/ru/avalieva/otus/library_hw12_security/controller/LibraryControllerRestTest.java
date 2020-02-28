@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({SpringExtension.class})
-@WebMvcTest({LibraryRestController.class})
+@WebMvcTest({LibraryRestController.class, UserDetailsServiceImpl.class})
 public class LibraryControllerRestTest {
     @Autowired
     private MockMvc mvc;

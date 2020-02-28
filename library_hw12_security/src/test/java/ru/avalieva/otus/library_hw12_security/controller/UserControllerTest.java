@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({SpringExtension.class})
-@WebMvcTest({UserController.class})
+@WebMvcTest({UserController.class, UserDetailsServiceImpl.class})
 public class UserControllerTest {
 
     @Autowired

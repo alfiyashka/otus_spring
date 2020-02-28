@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.avalieva.otus.library_hw12_security.security.UserDetailsServiceImpl;
 import ru.avalieva.otus.library_hw12_security.service.UserService;
 
@@ -11,8 +13,8 @@ import ru.avalieva.otus.library_hw12_security.service.UserService;
 public class LibraryHw12SecurityApplication {
 
 	@Bean
-	public UserDetailsService getUserDetailsService(UserService userService){
-		return new UserDetailsServiceImpl(userService);
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 	public static void main(String[] args) {
