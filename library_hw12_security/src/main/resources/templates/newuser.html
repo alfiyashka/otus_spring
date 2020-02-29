@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Register a new user</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+         a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<a th:href="@{/login}" href="login.html" class="button" >Login</a>
+
+<form id="addNewUser">
+    <fieldset>
+        <legend id="newUser">Register a new user </legend>
+        Login: <input type="text" id="login"><br>
+        Password: <input type="text" id="password"><br>
+    </fieldset>
+
+    <div class="row">
+        <button  type="button" onclick="addUser()">Register</button>
+    </div>
+</form>
+
+<script>
+      function addUser() {
+        var login = document.forms["addNewUser"]["login"].value;
+        var password = document.forms["addNewUser"]["password"].value;
+
+        var payload = { login: login, password: password }
+        var url = '/api/users'
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(payload),
+            contentType: "application/json; charset=utf-8",
+	        success: function () {
+                alert("User with login '" + login + "' was registered");
+                window.location.href = "/login";
+            },
+            error: function (jqXHR, error) {
+                alert("Cannot add user with login '" + login + "' :" + jqXHR.responseText);
+            }
+
+        });
+    }
+
+</script>
+</body>
+</html>

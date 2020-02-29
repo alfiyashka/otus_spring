@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all comments</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .comments, .comments td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+           margin-top: 10px;
+        }
+
+        a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+<a class="button" href="#" onclick="addNewComment()">Add new comment</a>
+
+
+<h1></h1>
+<form id="commentsForm">
+    <table class="comments">
+        <thead>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+       $(function () {
+        var url= window.location.pathname
+        var urlVariables = url.split('/')
+        var bookIsbn = urlVariables.pop()
+        $.ajax({
+            url: '/api/books/' + bookIsbn + '/comments',
+            type: 'GET',
+            success: function(commentsDTO) {
+                 $('thead').empty()
+                 $('tbody').empty()
+                 if ( commentsDTO.length > 0) {
+                    $('h1').append(`
+                     Comments of book with isbn '${bookIsbn}'
+                    `)
+                    $('thead').append(`
+                       <tr>
+                       <th>Comments</th>
+                       <th>Delete</th>
+                      </tr>
+                     `)
+                    commentsDTO.forEach(function (commentDTO) {
+                       $('tbody').append(`
+                         <tr>
+                            <td>${commentDTO.comment}
+                         </td>
+                         <td>
+                            <a class="button" href="#" onclick="deleteComment(${commentDTO.id}, ${bookIsbn})">Delete</a></td>
+                          </tr>
+                      `)
+                    })
+                 }
+                 else {
+                     alert("Comment of book with isbn '" + bookIsbn + "' not found")
+                 }
+            }
+        });
+    });
+    function addNewComment() {
+        var url= window.location.pathname
+        var urlVariables = url.split('/')
+        var bookIsbn = urlVariables.pop()
+        window.location.href = "/add/comment/book/" + bookIsbn;
+    }
+
+    function deleteComment(commentId, bookIsbn) {
+    $.ajax({
+            url: '/api/books/comments/' + commentId,
+            type: 'DELETE',
+            success: function () {
+                alert("Comment of book with isbn '" + bookIsbn + "' was deleted")
+                window.location.href = "/comments/book/" + bookIsbn;
+
+            },
+            error: function (jqXHR, error) {
+                alert("Cannot delete comment of book with isbn '" + bookIsbn + "':" + jqXHR.responseText);
+            }
+        });
+    }
+</script>
+</form>
+</body>
+</html>
