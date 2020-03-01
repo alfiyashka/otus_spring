@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all authors</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .authors, .authors td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+        }
+
+        a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<a th:href="@{/logout}" class="button">Logout</a>
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<h1>Authors:</h1>
+<table class="authors">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    $(function () {
+        $.get('/api/authors').done(function (authors) {
+         $('thead').empty()
+         $('tbody').empty()
+         if ( authors.length > 0) {
+            $('thead').append(`
+                 <tr>
+                    <th>ID</th>
+                    <th>Author full name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                 </tr>
+                 `)
+            authors.forEach(function (author) {
+
+                $('tbody').append(`
+                    <tr>
+                        <td>${author.id}</td>
+                        <td>${author.firstName} ${author.lastName}</td>
+                        <td>${author.phoneNumber}</td>
+                        <td>${author.email}</td>
+                    </tr>
+                `)
+            });
+         }
+         else {
+             alert("There are no authors")
+         }
+        })
+    });
+</script>
+</body>
+</html>
