@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add a new book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+
+        }
+
+        a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<a th:href="@{/logout}" class="button">Logout</a>
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<form id="addNewBook">
+    <fieldset>
+        <legend>Add a new book:</legend>
+        Name: <input type="text" id="name"><br>
+        Publishing year: <input type="text" id="publishYear"><br>
+        Author id: <input type="text" id="authorId"><br>
+        Genre id: <input type="text" id="genreId">
+    </fieldset>
+
+    <div class="row">
+        <button type="button" onclick="addBook()">Save</button>
+    </div>
+</form>
+
+
+<script>
+      function addBook() {
+        var bookName = document.forms["addNewBook"]["name"].value;
+        var publishYear = document.forms["addNewBook"]["publishYear"].value;
+        var authorId = document.forms["addNewBook"]["authorId"].value;
+        var genreId = document.forms["addNewBook"]["genreId"].value;
+        var payload = { isbn: 0, name: bookName, publishingYear: publishYear, authorId: authorId, genreId: genreId };
+
+        $.ajax({
+            url: '/api/books',
+            type: 'POST',
+            data: JSON.stringify(payload),
+            contentType: 'application/json; charset=utf-8',
+	        success: function () {
+                alert("Book with name '" + bookName + "' was added")
+                window.location.href = "/books";
+            },
+            error: function (jqXHR, error) {
+                alert("Cannot add book:" + jqXHR.responseText)
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>
