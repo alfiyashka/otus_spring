@@ -1,0 +1,23 @@
+spring:
+  data:
+    mongodb:
+      database: library_db
+      port: 27017
+      host: localhost
+
+  batch:
+    job:
+      enabled: false
+  shell:
+    interactive:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    initialization-mode: always
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
