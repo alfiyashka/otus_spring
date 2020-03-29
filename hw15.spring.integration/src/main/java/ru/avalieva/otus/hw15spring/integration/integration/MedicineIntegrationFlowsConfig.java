@@ -1,9 +1,7 @@
 package ru.avalieva.otus.hw15spring.integration.integration;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.config.EnableIntegration;
@@ -14,13 +12,21 @@ import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.scheduling.PollerMetadata;
 import org.springframework.messaging.MessageChannel;
 import ru.avalieva.otus.hw15spring.integration.domain.Recipe;
+import ru.avalieva.otus.hw15spring.integration.service.PharmacyService;
 
 import java.util.List;
 
 @IntegrationComponentScan
 @EnableIntegration
 @Configuration
-public class Config {
+public class MedicineIntegrationFlowsConfig {
+
+    private final PharmacyService pharmacyService;
+
+    MedicineIntegrationFlowsConfig(PharmacyService pharmacyService) {
+        this.pharmacyService = pharmacyService;
+    }
+
     @Bean
     public MessageChannel recipeChannel() {
         return MessageChannels.direct().get();
@@ -41,7 +47,7 @@ public class Config {
         return IntegrationFlows.from("recipeChannel")
                 .transform(Recipe::getMedicineItems)
                 .split()
-                .handle("pharmacyServiceImpl", "get")
+                .handle(pharmacyService, "get")
                 .aggregate()
                 .channel("medicineChannel")
                 .get();
@@ -60,7 +66,7 @@ public class Config {
     @Bean
     public IntegrationFlow addMedicineIntegrationFlow() {
         return IntegrationFlows.from("addMedicineChannel")
-                .handle("pharmacyServiceImpl", "add")
+                .handle(pharmacyService, "add")
                 .channel("addMedicineResultChannel")
                 .get();
     }
@@ -78,7 +84,7 @@ public class Config {
     @Bean
     public IntegrationFlow getAllMedicineIntegrationFlow() {
         return IntegrationFlows.from("addAllChannel")
-                .handle("pharmacyServiceImpl", "getAll")
+                .handle(pharmacyService, "getAll")
                 .channel("addAllResultChannel")
                 .get();
     }

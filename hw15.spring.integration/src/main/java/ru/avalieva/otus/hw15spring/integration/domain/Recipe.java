@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class Recipe {
-    List<MedicineItem> medicineItems;
+    private List<MedicineItem> medicineItems;
     private final String date;
     private final String doctorFullName;
 
