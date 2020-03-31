@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+            background: #4E9CAF;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+         a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<form id="editBook">
+    <fieldset>
+        <legend>Add a new book:</legend>
+        ISBN: <input type="text" id="isbn" readonly><br>
+        Name: <input type="text" id="name"><br>
+        Publishing year: <input type="text" id="publishYear"><br>
+        Author id: <input type="text" id="authorId"><br>
+        Genre id: <input type="text" id="genreId">
+    </fieldset>
+
+    <div class="row">
+        <button type="button" onclick="updateBook()">Update</button>
+    </div>
+</form>
+
+<script>
+window.onload = function(){
+   var url= window.location.pathname
+   var urlVariables = url.split('/')
+   var bookID = urlVariables.pop()
+   console.log(url)
+   $.ajax({
+            url: '/book/' + bookID + '?projection=bookDto',
+            type: 'GET',
+            success: function(bookDto) {
+                document.forms["editBook"]["isbn"].value = bookID;
+                document.forms["editBook"]["name"].value = bookDto.name;
+                document.forms["editBook"]["publishYear"].value = bookDto.publishingYear;
+                document.forms["editBook"]["authorId"].value = bookDto.authorId;
+                document.forms["editBook"]["genreId"].value = bookDto.genreId;
+            }
+        });
+   }
+function updateBook() {
+        var bookIsbn = document.forms["editBook"]["isbn"].value;
+        var bookName = document.forms["editBook"]["name"].value;
+        var publishYear = document.forms["editBook"]["publishYear"].value;
+        var authorId = document.forms["editBook"]["authorId"].value;
+        var genreId = document.forms["editBook"]["genreId"].value;
+
+        $.get('/genre/' + genreId).done(function (genre) {
+            $.get('/author/' + authorId).done(function (author) {
+                 var payload = { isbn: bookIsbn, name: bookName, publishingYear: publishYear, author: author, genre: genre };
+
+                 $.ajax({
+                    url: '/api/book',
+                    type: 'POST',
+                    data: JSON.stringify(payload),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function () {
+                        alert("Book with name '" + bookName + "' was updated")
+                        window.location.href = "/books";
+                    },
+                    error: function (jqXHR, error) {
+                        alert("Cannot add book:" + jqXHR.responseText)
+                    }
+                 });
+             }).fail(function() {
+                 alert("Cannot update book, because author with id " + authorId + " was not found")
+             })
+        }).fail(function() {
+              alert("Cannot update book, because genre with id " + genreId + " was not found")
+        })
+
+
+    }
+
+</script>
+</body>
+</html>
