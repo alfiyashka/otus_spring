@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Error</title>
+    <style type="text/css">
+        a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Exception occurred</h1>
+
+<span th:text="${message}">
+error message
+</span>
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+</body>
+</html>
