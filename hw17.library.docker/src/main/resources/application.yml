@@ -33,13 +33,6 @@ spring:
       
     show-sql: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    shutdown:
-      enabled: true
+
 server:
   port: 8080
