@@ -1,0 +1,45 @@
+locale:
+  language: en
+  country: US
+
+spring:
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    use-code-as-default-message: true
+
+  datasource:
+    url: jdbc:mysql://library-mysql:3306/library?allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: root
+    initialization-mode: always
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    continue-on-error: false
+    data-password: root
+    data-username: root
+    platform: mysql
+    schema: classpath:schema-mysql.sql
+    data: classpath:data-mysql.sql
+    
+    testWhileIdle: true
+    validationQuery: SELECT 1
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      dialect:  org.hibernate.dialect.MySQL5Dialect
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      
+    show-sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+server:
+  port: 8080

@@ -1,0 +1,30 @@
+version: '3'
+services:
+  library-web:
+    container_name: 'library'
+    build: .
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - library-mysql
+    links:
+      - library-mysql
+    environment:
+      WAIT_HOSTS: mysql:3306
+  library-mysql:
+    image: mysql:latest
+    restart: always
+    container_name: 'library_mysql'
+    environment:
+      MYSQL_DATABASE: library
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+volumes:
+  my-db:
