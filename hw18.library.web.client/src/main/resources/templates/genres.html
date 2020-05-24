@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all genres</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .genres, .genres td, th {
+        border: 1px solid black;
+        background: #4E9CAF;
+        }
+
+        a.button {
+           display: block;
+           width: 115px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script></head>
+<body>
+
+<a th:href="@{/books}" href="books.html" class="button" >Go to Books List</a>
+
+<h1>Genres:</h1>
+<table class="genres">
+    <thead>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    $(function () {
+        $.get('/library/api/genres').done(function (genres) {
+            $('thead').empty()
+            $('tbody').empty()
+            if ( genres.length > 0) {
+                $('thead').append(`
+                    <tr>
+                       <th>ID</th>
+                       <th>Genre name:</th>
+                    </tr>
+                 `)
+                genres.forEach(function (genre) {
+                   $('tbody').append(`
+                      <tr>
+                         <td>${genre.id}</td>
+                         <td>${genre.genreName}</td>
+                      </tr>
+                   `)
+                });
+            }
+            else {
+               alert("There are no genres")
+            }
+        })
+    });
+</script>
+</body>
+</html>
+
+
