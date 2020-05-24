@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Recipes</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        #findRecipeForm td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+           font-size: 8pt;
+           align: center;
+        }
+
+        #name {
+           margin-top: 10px;
+           width: 250px;
+        }
+
+         a.button {
+           display: block;
+           width: 150px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<a th:href="@{/recipe_info}" href="recipe_info.html" class="button" >К главной странице</a>
+
+<h1>Найти рецепт</h1>
+<form id="findRecipeForm">
+    <fieldset>
+        <ul style="list-style-type:none;">
+            <li><label>Коллеция:</label>  <input type="hidden" id="recipeCollection" readonly>
+                <select id="recipeCollectionSelect" onchange="setToInput()">
+                </select></li>
+            <li>
+                <label>Ингредиенты:</label>
+                <div class="ingredients">
+                </div>
+            </li>
+            <li><label>Имя: </label>  <input type="text" id="name"></li>
+        </ul>
+
+        <div class="row">
+            <button type="button" onclick="findRecipe()">Найти рецепт</button>
+        </div>
+    </fieldset>
+
+    <table class="recipes">
+        <thead>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+
+    $(function () {
+        $.get('/recipeSystem/api/recipeType').done(function (recipeTypes) {
+            if ( recipeTypes.length > 0) {
+                  $('select').append(`
+                       <option value=none selected=true>Выберите коллекцию</option>
+                  `)
+               recipeTypes.forEach(function (recipeType) {
+                  $('select').append(`
+                       <option value=${recipeType.recipeType}>${recipeType.recipeTypeValue}</option>
+                  `)
+               });
+            }
+            else {
+             alert("Внутренняя ошибка: нет коллекции")
+            }
+        })
+        $.get('/recipeSystem/api/ingredient').done(function (ingredients) {
+            if (ingredients.length > 0) {
+               var wrapper = $(".ingredients");
+               var counter = 1;
+                $(wrapper).append(` <tr> `)
+               ingredients.forEach(function (ingredient) {
+                   $(wrapper).append(`
+                     <td><input type="checkbox">${ingredient} </td>
+                  `)
+                  if (counter % 5 == 0) {
+                   $(wrapper).append(` <tr> </tr>`)
+                  }
+                  counter ++;
+               });
+               $(wrapper).append(` </tr>`)
+            }
+            else {
+               alert("Внутренняя ошибка: нет ингредиентов")
+            }
+        })
+    });
+
+    function setToInput() {
+        document.getElementById("recipeCollection").value = document.getElementById("recipeCollectionSelect").value;
+    }
+
+    function findRecipe() {
+        var recipeName = document.forms["findRecipeForm"]["name"].value;
+        var recipeCollection = document.forms["findRecipeForm"]["recipeCollection"].value;
+
+        var ingredients = []
+        var wrapper = $(".ingredients");
+        var children = [].slice.call(wrapper[0].children);
+        children.forEach(function (child) {
+            if (child.localName === "td"
+               && child.childNodes[0].checked == true) {
+               var ingredientName = child.childNodes[1].data;
+               ingredients.push(ingredientName);
+            }
+        });
+
+        var payload = { name: recipeName, collection: recipeCollection, ingredients: ingredients };
+        $.ajax({
+            url: '/recipeSystem/api/recipe/find',
+            type: 'POST',
+            data: JSON.stringify(payload),
+            contentType: 'application/json; charset=utf-8',
+	        success: function(recipesDTO) {
+                 $('thead').empty()
+                 $('tbody').empty()
+                 if ( recipesDTO.length > 0) {
+                      $('thead').append(`
+                       <tr>
+                       <th>Имя</th>
+                       <th>Калории(ККал)</th>
+                       <th>Ингредиенты</th>
+                       <th>Органические соединения</th>
+                       <th>Описание</th>
+                      </tr>
+                     `)
+                    recipesDTO.forEach(function (recipeDTO) {
+                       $('tbody').append(`
+                         <tr>
+                            <td>${recipeDTO.name}</td>
+                            <td>${recipeDTO.totalCalorie}</td>
+                            <td>${getIngredients(recipeDTO.ingredients)} </td>
+                            <td>${getNutrients(recipeDTO.nutrients)} </td>
+                            <td>${recipeDTO.description}</td>
+                         </tr>
+                      `)
+                    })
+                 }
+                 else {
+                     alert("Recipe was not found")
+                 }
+            },
+            error: function (jqXHR, error) {
+                alert("Cannot add recipe:" + jqXHR.responseText)
+            }
+        });
+    }
+
+    function getIngredients(ingredients) {
+        var  result =  "<ul>";
+        ingredients.forEach(function (ingredientDto) {
+               result += "<li> " + ingredientDto.ingredientName + " - " + ingredientDto.weight + "грамм </li>"
+        });
+        result += "</ul>";
+        return result;
+    }
+
+   function getNutrients(nutrients) {
+       var  result =  "<ul>"
+       nutrients.forEach(function (nutrient) {
+
+       var nutrientValue = $.ajax({
+            type: "GET",
+            url: '/recipeSystem/api/nutrient/' + nutrient.nutrient,
+            async: false
+            }).responseText;
+       result += "<li> " + nutrientValue + " - " + nutrient.weight + " грамм </li>";
+          }
+       );
+       result += "</ul>";
+       return result;
+   }
+</script>
+</form>
+</body>
+</html>
