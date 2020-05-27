@@ -5,14 +5,8 @@ import com.avalieva.otus.project.cookbook.domain.neo4j.IngredientNeo4j;
 import com.avalieva.otus.project.cookbook.domain.neo4j.NutrientNeo4j;
 import com.avalieva.otus.project.cookbook.domain.neo4j.RecipeNeo4j;
 import com.avalieva.otus.project.cookbook.domain.neo4j.RecipeTypeNeo4j;
-import com.avalieva.otus.project.cookbook.dto.IngredientDto;
-import com.avalieva.otus.project.cookbook.dto.NutrientDto;
 import com.avalieva.otus.project.cookbook.dto.RecipeDtoJson;
-import com.avalieva.otus.project.cookbook.dto.RecipeTypeDto;
 import com.avalieva.otus.project.cookbook.model.CookbookException;
-import com.avalieva.otus.project.cookbook.model.ENutrient;
-import com.avalieva.otus.project.cookbook.model.ERecipeType;
-import com.avalieva.otus.project.cookbook.model.RecipeRequest;
 import com.avalieva.otus.project.cookbook.repository.mongo.RecipeMongoRepository;
 import com.avalieva.otus.project.cookbook.repository.neo.IngredientNeo4jRepository;
 import com.avalieva.otus.project.cookbook.repository.neo.NutrientsNeo4jRepository;
@@ -21,6 +15,9 @@ import com.avalieva.otus.project.cookbook.repository.neo.RecipeTypeNeo4jReposito
 import com.avalieva.otus.project.cookbook.service.CookbookService;
 import com.avalieva.otus.project.cookbook.service.MessageService;
 import com.mongodb.MongoException;
+import cookbook.common.dto.*;
+import cookbook.common.model.ENutrient;
+import cookbook.common.model.ERecipeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +66,7 @@ public class CookbookServiceImplTest {
         ingredientDtos.add(new IngredientDto("Apple", 100));
         List<NutrientDto> nutrientDtos = new ArrayList<>();
         nutrientDtos.add(new NutrientDto(ENutrient.PROTEIN, 12));
-        RecipeTypeDto recipeTypeDto = new RecipeTypeDto(ERecipeType.SALAD.name());
+        RecipeTypeDto recipeTypeDto = RecipeTypeDtoConverter.convert(ERecipeType.SALAD);
 
         when(recipeMongoRepository.save(recipe)).thenReturn(recipe);
         when(recipeNeo4jRepository.save(any())).thenReturn(new RecipeNeo4j("RecipeName", "MongoId"));
@@ -106,7 +103,7 @@ public class CookbookServiceImplTest {
         ingredientDtos.add(new IngredientDto("Apple", 100));
         List<NutrientDto> nutrientDtos = new ArrayList<>();
         nutrientDtos.add(new NutrientDto(ENutrient.PROTEIN, 12));
-        RecipeTypeDto recipeTypeDto = new RecipeTypeDto(ERecipeType.SALAD.name());
+        RecipeTypeDto recipeTypeDto = RecipeTypeDtoConverter.convert(ERecipeType.SALAD);
 
         when(recipeMongoRepository.save(recipe)).thenThrow(new MongoException("Error"));
         when(messageService.getMessage("add.recipe.error", "Error")).thenReturn("Error");

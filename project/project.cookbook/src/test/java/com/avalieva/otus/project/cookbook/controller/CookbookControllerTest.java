@@ -2,11 +2,12 @@ package com.avalieva.otus.project.cookbook.controller;
 
 import com.avalieva.otus.project.cookbook.dto.RecipeDtoJson;
 import com.avalieva.otus.project.cookbook.model.CookbookException;
-import com.avalieva.otus.project.cookbook.model.ERecipeType;
-import com.avalieva.otus.project.cookbook.model.RecipeRequest;
+import com.avalieva.otus.project.cookbook.neo.data.DataLoader;
 import com.avalieva.otus.project.cookbook.service.CookbookService;
 import com.avalieva.otus.project.cookbook.service.impl.CookbookServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cookbook.common.dto.RecipeRequest;
+import cookbook.common.model.ERecipeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +38,9 @@ public class CookbookControllerTest {
 
     @MockBean
     private CookbookService cookbookService;
+
+    @MockBean
+    private DataLoader dataLoader;
 
     @Test
     public void getIngredientsTest() throws Exception {
@@ -166,7 +170,7 @@ public class CookbookControllerTest {
         RecipeRequest recipeRequest = new RecipeRequest();
         when(cookbookService.findRecipes(recipeRequest)).thenReturn(recipes);
 
-        MvcResult result = this.mvc.perform(post("/api/recipe/find")
+        MvcResult result = this.mvc.perform(post("/api/recipe/?findHasIngredient=true")
                 .content(objectMapper.writeValueAsString(recipeRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -183,7 +187,7 @@ public class CookbookControllerTest {
         CookbookException exception = new CookbookException("error");
         when(cookbookService.findRecipes(recipeRequest)).thenThrow(exception);
 
-        MvcResult result = this.mvc.perform(post("/api/recipe/find/")
+        MvcResult result = this.mvc.perform(post("/api/recipe/?findHasIngredient=true")
                 .content(objectMapper.writeValueAsString(recipeRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -200,7 +204,7 @@ public class CookbookControllerTest {
         RecipeRequest recipeRequest = new RecipeRequest();
         when(cookbookService.findRecipesNotHaveIngredients(recipeRequest)).thenReturn(recipes);
 
-        MvcResult result = this.mvc.perform(post("/api/recipe/notHave")
+        MvcResult result = this.mvc.perform(post("/api/recipe/?findHasIngredient=false")
                 .content(objectMapper.writeValueAsString(recipeRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -217,7 +221,7 @@ public class CookbookControllerTest {
         CookbookException exception = new CookbookException("error");
         when(cookbookService.findRecipesNotHaveIngredients(recipeRequest)).thenThrow(exception);
 
-        MvcResult result = this.mvc.perform(post("/api/recipe/notHave")
+        MvcResult result = this.mvc.perform(post("/api/recipe/?findHasIngredient=false")
                 .content(objectMapper.writeValueAsString(recipeRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())

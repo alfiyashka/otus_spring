@@ -26,6 +26,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.avalieva.otus</groupId>
+			<artifactId>cookbook.common</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring.version}</version>
@@ -138,6 +143,11 @@
         </dependency>
 
 
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-ogm-bolt-driver</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

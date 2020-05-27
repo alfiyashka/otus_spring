@@ -1,8 +1,8 @@
 package ru.avalieva.otus.recipe.recomendation.system.ration.strategy;
 
 
-import ru.avalieva.otus.recipe.recomendation.system.dto.RecipeDtoJson;
-import ru.avalieva.otus.recipe.recomendation.system.dto.RecipeForRationDto;
+import cookbook.common.dto.RecipeDtoJson;
+import cookbook.common.dto.RecipeForRationDto;
 
 import java.util.List;
 

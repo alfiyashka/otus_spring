@@ -1,6 +1,9 @@
 package ru.avalieva.otus.recipe.recomendation.system.service;
 
 import com.mongodb.MongoException;
+import cookbook.common.dto.*;
+import cookbook.common.model.ERationStrategy;
+import cookbook.common.model.ERecipeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import ru.avalieva.otus.recipe.recomendation.system.domain.Diet;
-import ru.avalieva.otus.recipe.recomendation.system.dto.*;
 import ru.avalieva.otus.recipe.recomendation.system.feing.CookbookFeignController;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERecipeType;
 import ru.avalieva.otus.recipe.recomendation.system.ration.strategy.RationStrategy;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERationStrategy;
 import ru.avalieva.otus.recipe.recomendation.system.repository.DietRepository;
 import ru.avalieva.otus.recipe.recomendation.system.model.RecipeManagerException;
 import ru.avalieva.otus.recipe.recomendation.system.service.impl.RecipeManagerServiceImpl;
@@ -20,6 +20,7 @@ import ru.avalieva.otus.recipe.recomendation.system.service.impl.RecipeManagerSe
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 
@@ -100,28 +101,28 @@ public class RecipeManagerServiceTest {
 
     @Test
     public void findRecipeTest() {
-        RecipeDtoJson recipe = new RecipeDtoJson();
+        RecipeDtoJson recipe = new RecipeDtoJson("Neme", "Type", 12, "description", null, null);
         List<RecipeDtoJson> recipes = new ArrayList<>();
         recipes.add(recipe);
         RecipeRequest request = new RecipeRequest();
-        when(feignController.findRecipe(request)).thenReturn(recipes);
-        List<RecipeDtoJson> result = recipeManager.findRecipe(request);
-        Assertions.assertEquals(recipes, result);
+        when(feignController.findRecipe(request, true)).thenReturn(recipes);
+        List<RecipeDtoJsonFull> result = recipeManager.findRecipe(request, true);
+        Assertions.assertEquals(recipes.stream().map(RecipeDtoJsonFullConvertor::convert).collect(Collectors.toList()), result);
 
-        verify(feignController).findRecipe(request);
+        verify(feignController).findRecipe(request,true);
     }
 
     @Test
     public void findRecipeTestFailed() {
         RecipeRequest request = new RecipeRequest();
-        when(feignController.findRecipe(request)).thenThrow(new RuntimeException("Error"));
+        when(feignController.findRecipe(request, true)).thenThrow(new RuntimeException("Error"));
         when(messageService.getMessage("find.recipe.error","Error")).thenReturn("Error");
 
         RecipeManagerException error = Assertions.assertThrows(RecipeManagerException.class,
-                () -> { recipeManager.findRecipe(request); });
+                () -> { recipeManager.findRecipe(request, true); });
         Assertions.assertEquals("Error", error.getMessage());
 
-        verify(feignController).findRecipe(request);
+        verify(feignController).findRecipe(request, true);
         verify(messageService, times(1)).
                 getMessage("find.recipe.error","Error");
     }
@@ -161,8 +162,8 @@ public class RecipeManagerServiceTest {
         List<RecipeDtoJson> recipes = new ArrayList<>();
         recipes.add(recipe);
         when(feignController.getRecipesByType(ERecipeType.SOUP.name())).thenReturn(recipes);
-        List<RecipeDtoJson> result = recipeManager.getRecipesByType(ERecipeType.SOUP.name());
-        Assertions.assertEquals(recipes, result);
+        List<RecipeDtoJsonFull> result = recipeManager.getRecipesByType(ERecipeType.SOUP.name());
+        Assertions.assertEquals(recipes.stream().map(RecipeDtoJsonFullConvertor::convert).collect(Collectors.toList()), result);
 
         verify(feignController).getRecipesByType(ERecipeType.SOUP.name());
     }

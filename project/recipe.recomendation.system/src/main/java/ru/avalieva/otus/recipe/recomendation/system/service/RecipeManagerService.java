@@ -1,7 +1,7 @@
 package ru.avalieva.otus.recipe.recomendation.system.service;
 
-import ru.avalieva.otus.recipe.recomendation.system.dto.*;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERationStrategy;
+import cookbook.common.dto.*;
+import cookbook.common.model.ERationStrategy;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ public interface RecipeManagerService {
     List<RecipeForRationDto> getRecipes(ERationStrategy rationStrategy);
     List<RecipeTypeDto> getRecipeTypes();
     List<String> getAllIngredients();
-    List<RecipeDtoJson> getRecipesByType(String recipeType);
-    List<RecipeDtoJson> findRecipe(RecipeRequest recipeRequest);
+    List<RecipeDtoJsonFull> getRecipesByType(String recipeType);
+    List<RecipeDtoJsonFull> findRecipe(RecipeRequest recipeRequest, boolean findHasIngredient);
     void addRecipe(RecipeDtoJson recipeDtoJson);
     String getRationDescription(String strategy);
 }

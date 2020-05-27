@@ -1,9 +1,9 @@
 package ru.avalieva.otus.recipe.recomendation.system.ration.strategy.impl;
 
+import cookbook.common.dto.RecipeDtoJson;
+import cookbook.common.model.ERecipeType;
 import lombok.AllArgsConstructor;
-import ru.avalieva.otus.recipe.recomendation.system.dto.RecipeDtoJson;
 import ru.avalieva.otus.recipe.recomendation.system.feing.CookbookFeignController;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERecipeType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,11 @@
 package com.avalieva.otus.project.cookbook.service;
 
 import com.avalieva.otus.project.cookbook.domain.mongo.Recipe;
-import com.avalieva.otus.project.cookbook.model.RecipeRequest;
-import com.avalieva.otus.project.cookbook.dto.IngredientDto;
-import com.avalieva.otus.project.cookbook.dto.NutrientDto;
 import com.avalieva.otus.project.cookbook.dto.RecipeDtoJson;
-import com.avalieva.otus.project.cookbook.dto.RecipeTypeDto;
+import cookbook.common.dto.IngredientDto;
+import cookbook.common.dto.NutrientDto;
+import cookbook.common.dto.RecipeRequest;
+import cookbook.common.dto.RecipeTypeDto;
 
 import java.util.List;
 

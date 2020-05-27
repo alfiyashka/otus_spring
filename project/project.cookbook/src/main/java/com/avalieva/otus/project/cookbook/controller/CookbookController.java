@@ -1,8 +1,9 @@
 package com.avalieva.otus.project.cookbook.controller;
 
-import com.avalieva.otus.project.cookbook.model.RecipeRequest;
 import com.avalieva.otus.project.cookbook.dto.RecipeDtoJson;
 import com.avalieva.otus.project.cookbook.service.CookbookService;
+import cookbook.common.dto.RecipeDtoJsonFull;
+import cookbook.common.dto.RecipeRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,13 +35,11 @@ public class CookbookController {
         return cookbookService.getRecipesByType(recipeType);
     }
 
-    @PostMapping("/api/recipe/find")
-    List<RecipeDtoJson> findRecipes(@RequestBody RecipeRequest recipeRequest) {
-        return cookbookService.findRecipes(recipeRequest);
-    }
-
-    @PostMapping("/api/recipe/notHave")
-    List<RecipeDtoJson> findRecipesNotHaveIngredients(@RequestBody RecipeRequest recipeRequest) {
-        return cookbookService.findRecipesNotHaveIngredients(recipeRequest);
+    @PostMapping("/api/recipe/")
+    List<RecipeDtoJson> findRecipes(@RequestBody RecipeRequest recipeRequest,
+                                    @RequestParam boolean findHasIngredient) {
+        return findHasIngredient
+                ? cookbookService.findRecipes(recipeRequest)
+                : cookbookService.findRecipesNotHaveIngredients(recipeRequest);
     }
 }

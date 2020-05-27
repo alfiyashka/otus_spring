@@ -1,8 +1,9 @@
 package com.avalieva.otus.project.cookbook.domain.neo4j;
 
-import com.avalieva.otus.project.cookbook.model.ENutrient;
-import com.avalieva.otus.project.cookbook.dto.IngredientDto;
-import com.avalieva.otus.project.cookbook.dto.NutrientDto;
+
+import cookbook.common.dto.IngredientDto;
+import cookbook.common.dto.NutrientDto;
+import cookbook.common.model.ENutrient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.neo4j.ogm.annotation.*;
@@ -63,7 +64,7 @@ public class RecipeNeo4j {
     public List<NutrientDto> getNutrients() {
         return ingredient2NutrientsRelationships
                 .stream()
-                .map(it -> new NutrientDto(ENutrient.eNutrient(it.getNutrient().getName()), it.getWeight()))
+                .map(it -> new NutrientDto(ENutrient.valueOf(it.getNutrient().getName()), it.getWeight()))
                 .collect(Collectors.toList());
     }
 

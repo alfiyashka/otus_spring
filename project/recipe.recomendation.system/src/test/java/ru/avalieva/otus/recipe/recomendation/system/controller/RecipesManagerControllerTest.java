@@ -1,6 +1,11 @@
 package ru.avalieva.otus.recipe.recomendation.system.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cookbook.common.dto.*;
+import cookbook.common.model.ENutrient;
+import cookbook.common.model.ERation;
+import cookbook.common.model.ERationStrategy;
+import cookbook.common.model.ERecipeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,11 +18,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.avalieva.otus.recipe.recomendation.system.domain.User;
-import ru.avalieva.otus.recipe.recomendation.system.dto.*;
-import ru.avalieva.otus.recipe.recomendation.system.model.ENutrient;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERecipeType;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERation;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERationStrategy;
 import ru.avalieva.otus.recipe.recomendation.system.security.RecipeManagerUserDetails;
 import ru.avalieva.otus.recipe.recomendation.system.security.UserDetailsServiceImpl;
 import ru.avalieva.otus.recipe.recomendation.system.security.UserRole;
@@ -53,6 +53,7 @@ public class RecipesManagerControllerTest {
 
     @MockBean
     private MessageService messageService;
+
 
     @MockBean
     private UserDetailsServiceImpl userDetailsService;
@@ -149,23 +150,23 @@ public class RecipesManagerControllerTest {
         RecipeRequest recipeRequest = new RecipeRequest("Recipe Name", ERecipeType.SALAD.name(), ingredients);
         List<IngredientDto> ingredientsDto = new ArrayList<>();
         ingredientsDto.add(ingredient);
-        List<RecipeDtoJson> recipes = new ArrayList<>();
-        RecipeDtoJson recipe = new RecipeDtoJson("RecipeName", ERecipeType.SALAD.name(), 100, "description", ingredientsDto, null);
+        List<RecipeDtoJsonFull> recipes = new ArrayList<>();
+        RecipeDtoJsonFull recipe = new RecipeDtoJsonFull("RecipeName", ERecipeType.SALAD.name(), 100, "description", ingredientsDto, null);
         recipes.add(recipe);
-        when(recipeManagerService.findRecipe(recipeRequest)).thenReturn(recipes);
+        when(recipeManagerService.findRecipe(recipeRequest, true)).thenReturn(recipes);
 
         RecipeManagerUserDetails user = new RecipeManagerUserDetails(new User(null,"user", "password"), role);
 
-        MvcResult result = this.mvc.perform(post("/recipeSystem/api/recipe/find")
+        MvcResult result = this.mvc.perform(post("/recipeSystem/api/recipe/?findHasIngredient=true")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(recipeRequest))
                 .with(user(user)))
                 .andExpect(status().isOk())
                 .andReturn();
         Assertions.assertEquals(recipes, objectMapper.readValue(result.getResponse().getContentAsString(UTF_8),
-                objectMapper.getTypeFactory().constructCollectionType(List.class, RecipeDtoJson.class)));
+                objectMapper.getTypeFactory().constructCollectionType(List.class, RecipeDtoJsonFull.class)));
 
-        verify(recipeManagerService, times(1)).findRecipe(recipeRequest);
+        verify(recipeManagerService, times(1)).findRecipe(recipeRequest, true);
     }
 
     @ParameterizedTest
@@ -179,11 +180,11 @@ public class RecipesManagerControllerTest {
         RecipeRequest recipeRequest = new RecipeRequest("Recipe Name", ERecipeType.SALAD.name(), ingredients);
 
         RecipeManagerException exception = new RecipeManagerException("error");
-        when(recipeManagerService.findRecipe(recipeRequest)).thenThrow(exception);
+        when(recipeManagerService.findRecipe(recipeRequest, true)).thenThrow(exception);
 
         RecipeManagerUserDetails user = new RecipeManagerUserDetails(new User(null,"user", "password"), role);
 
-        MvcResult result = this.mvc.perform(post("/recipeSystem/api/recipe/find")
+        MvcResult result = this.mvc.perform(post("/recipeSystem/api/recipe/?findHasIngredient=true")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(recipeRequest))
                 .with(user(user)))
@@ -191,7 +192,7 @@ public class RecipesManagerControllerTest {
                 .andReturn();
         Assertions.assertEquals(exception.getMessage(), result.getResponse().getContentAsString());
 
-        verify(recipeManagerService, times(1)).findRecipe(recipeRequest);
+        verify(recipeManagerService, times(1)).findRecipe(recipeRequest, true);
     }
 
     @ParameterizedTest
@@ -200,7 +201,7 @@ public class RecipesManagerControllerTest {
             names = {"USER", "ADMIN"})
     public void getRecipeTypesTest(UserRole role) throws Exception {
         List<RecipeTypeDto> recipeTypes = new ArrayList<>();
-        recipeTypes.add(new RecipeTypeDto(ERecipeType.SOUP.name(), ERecipeType.SOUP.getValue()));
+        recipeTypes.add(RecipeTypeDtoConverter.convert(ERecipeType.SOUP));
         when(recipeManagerService.getRecipeTypes()).thenReturn(recipeTypes);
 
         RecipeManagerUserDetails user = new RecipeManagerUserDetails(new User(null,"user", "password"), role);
@@ -248,7 +249,7 @@ public class RecipesManagerControllerTest {
                 .with(user(user)))
                 .andExpect(status().isOk())
                 .andReturn();
-        Assertions.assertEquals(ERecipeType.SALAD.getValue(), result.getResponse().getContentAsString(UTF_8));
+        Assertions.assertEquals(RecipeTypeDtoConverter.convert(ERecipeType.SALAD).getRecipeTypeValue(), result.getResponse().getContentAsString(UTF_8));
 
     }
 
@@ -303,8 +304,8 @@ public class RecipesManagerControllerTest {
         IngredientDto ingredient = new IngredientDto("Apple", 100);
         List<IngredientDto> ingredientsDto = new ArrayList<>();
         ingredientsDto.add(ingredient);
-        List<RecipeDtoJson> recipes = new ArrayList<>();
-        RecipeDtoJson recipe = new RecipeDtoJson("RecipeName", ERecipeType.SALAD.name(), 100, "description", ingredientsDto, null);
+        List<RecipeDtoJsonFull> recipes = new ArrayList<>();
+        RecipeDtoJsonFull recipe = new RecipeDtoJsonFull("RecipeName", ERecipeType.SALAD.name(), 100, "description", ingredientsDto, null);
         recipes.add(recipe);
         when(recipeManagerService.getRecipesByType(ERecipeType.SALAD.name())).thenReturn(recipes);
 
@@ -316,7 +317,7 @@ public class RecipesManagerControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
         Assertions.assertEquals(recipes, objectMapper.readValue(result.getResponse().getContentAsString(UTF_8),
-                objectMapper.getTypeFactory().constructCollectionType(List.class, RecipeDtoJson.class)));
+                objectMapper.getTypeFactory().constructCollectionType(List.class, RecipeDtoJsonFull.class)));
 
         verify(recipeManagerService, times(1)).getRecipesByType(ERecipeType.SALAD.name());
     }
@@ -349,8 +350,8 @@ public class RecipesManagerControllerTest {
         IngredientDto ingredient = new IngredientDto("Apple", 100);
         List<IngredientDto> ingredientsDto = new ArrayList<>();
         ingredientsDto.add(ingredient);
-        List<RecipeDtoJson> recipes = new ArrayList<>();
-        RecipeDtoJson recipe = new RecipeDtoJson("RecipeName", ERecipeType.SALAD.name(), 100, "description", ingredientsDto, null);
+        List<RecipeDtoJsonFull> recipes = new ArrayList<>();
+        RecipeDtoJsonFull recipe = new RecipeDtoJsonFull("RecipeName", ERecipeType.SALAD.name(), 100, "description", ingredientsDto, null);
         recipes.add(recipe);
         RecipeForRationDto recipeForRationDto = new RecipeForRationDto(RationDtoConverter.convert(ERation.DINNER), recipes);
         List<RecipeForRationDto> recipeForRationDtos = new ArrayList<>();
@@ -388,21 +389,6 @@ public class RecipesManagerControllerTest {
         Assertions.assertEquals(exception.getMessage(), result.getResponse().getContentAsString());
 
         verify(recipeManagerService, times(1)).getRecipes(ERationStrategy.VEGAN);
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-            value = UserRole.class,
-            names = {"USER", "ADMIN"})
-    public void getNutrientValueTest(UserRole role) throws Exception {
-        RecipeManagerUserDetails user = new RecipeManagerUserDetails(new User(null,"user", "password"), role);
-
-        MvcResult result = this.mvc.perform(get("/recipeSystem/api/nutrient/" + ENutrient.CARBOHYDRATE.name())
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(user(user)))
-                .andExpect(status().isOk())
-                .andReturn();
-        Assertions.assertEquals(ENutrient.CARBOHYDRATE.getValue(), result.getResponse().getContentAsString());
     }
 
     @ParameterizedTest

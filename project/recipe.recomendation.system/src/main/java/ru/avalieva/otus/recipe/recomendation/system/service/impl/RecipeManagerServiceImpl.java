@@ -1,14 +1,14 @@
 package ru.avalieva.otus.recipe.recomendation.system.service.impl;
 
+import cookbook.common.dto.*;
+import cookbook.common.model.ERationStrategy;
+import cookbook.common.model.ERecipeType;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.avalieva.otus.recipe.recomendation.system.domain.Diet;
-import ru.avalieva.otus.recipe.recomendation.system.dto.*;
 import ru.avalieva.otus.recipe.recomendation.system.feing.CookbookFeignController;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERecipeType;
 import ru.avalieva.otus.recipe.recomendation.system.model.RecipeManagerException;
 import ru.avalieva.otus.recipe.recomendation.system.ration.strategy.RationStrategy;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERationStrategy;
 import ru.avalieva.otus.recipe.recomendation.system.ration.strategy.impl.RationStrategyFactory;
 import ru.avalieva.otus.recipe.recomendation.system.repository.DietRepository;
 import ru.avalieva.otus.recipe.recomendation.system.service.MessageService;
@@ -68,9 +68,12 @@ public class RecipeManagerServiceImpl implements RecipeManagerService {
     }
 
     @Override
-    public List<RecipeDtoJson> findRecipe(RecipeRequest recipeRequest) {
+    public List<RecipeDtoJsonFull> findRecipe(RecipeRequest recipeRequest, boolean findHasIngredient) {
         try {
-            return feignController.findRecipe(recipeRequest);
+            return feignController.findRecipe(recipeRequest, findHasIngredient)
+                    .stream()
+                    .map(RecipeDtoJsonFullConvertor::convert)
+                    .collect(Collectors.toList());
         }
         catch (Exception e) {
             throw new RecipeManagerException(messageService.getMessage("find.recipe.error", e.getMessage()), e);
@@ -92,9 +95,12 @@ public class RecipeManagerServiceImpl implements RecipeManagerService {
     }
 
     @Override
-    public List<RecipeDtoJson> getRecipesByType(String recipeType) {
+    public List<RecipeDtoJsonFull> getRecipesByType(String recipeType) {
         try {
-            return feignController.getRecipesByType(recipeType);
+            return feignController.getRecipesByType(recipeType)
+                    .stream()
+                    .map(RecipeDtoJsonFullConvertor::convert)
+                    .collect(Collectors.toList());
         }
         catch (Exception e) {
             throw new RecipeManagerException(messageService.getMessage("get.recipes.by.collection.error", recipeType, e.getMessage()), e);

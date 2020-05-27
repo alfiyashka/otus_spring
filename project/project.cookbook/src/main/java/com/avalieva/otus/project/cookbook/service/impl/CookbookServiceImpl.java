@@ -7,11 +7,7 @@ import com.avalieva.otus.project.cookbook.domain.neo4j.RecipeNeo4j;
 import com.avalieva.otus.project.cookbook.domain.neo4j.RecipeTypeNeo4j;
 import com.avalieva.otus.project.cookbook.dto.RecipeConverter;
 import com.avalieva.otus.project.cookbook.model.CookbookException;
-import com.avalieva.otus.project.cookbook.model.RecipeRequest;
-import com.avalieva.otus.project.cookbook.dto.IngredientDto;
-import com.avalieva.otus.project.cookbook.dto.NutrientDto;
 import com.avalieva.otus.project.cookbook.dto.RecipeDtoJson;
-import com.avalieva.otus.project.cookbook.dto.RecipeTypeDto;
 import com.avalieva.otus.project.cookbook.repository.mongo.RecipeMongoRepository;
 import com.avalieva.otus.project.cookbook.repository.neo.IngredientNeo4jRepository;
 import com.avalieva.otus.project.cookbook.repository.neo.NutrientsNeo4jRepository;
@@ -20,6 +16,10 @@ import com.avalieva.otus.project.cookbook.repository.neo.RecipeTypeNeo4jReposito
 import com.avalieva.otus.project.cookbook.service.CookbookService;
 import com.avalieva.otus.project.cookbook.service.MessageService;
 import com.google.common.collect.Streams;
+import cookbook.common.dto.IngredientDto;
+import cookbook.common.dto.NutrientDto;
+import cookbook.common.dto.RecipeRequest;
+import cookbook.common.dto.RecipeTypeDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +73,7 @@ public class CookbookServiceImpl implements CookbookService {
     }
 
     private RecipeTypeNeo4j createRecipeType(RecipeTypeDto recipeTypeDto) {
-        return recipeTypeNeo4jRepository.save(new RecipeTypeNeo4j(recipeTypeDto.getName()));
+        return recipeTypeNeo4jRepository.save(new RecipeTypeNeo4j(recipeTypeDto.getRecipeType()));
     }
 
     @Override
@@ -93,12 +93,12 @@ public class CookbookServiceImpl implements CookbookService {
 
             if (nutrientDtos != null) {
                 for (NutrientDto nutrientDto : nutrientDtos) {
-                    NutrientNeo4j nutrientNeo4j = nutrientsNeo4jRepository.findByName(nutrientDto.getNutrient().toString())
-                            .orElseGet(() -> createNutrient(nutrientDto.getNutrient().toString()));
+                    NutrientNeo4j nutrientNeo4j = nutrientsNeo4jRepository.findByName(nutrientDto.getNutrient().name())
+                            .orElseGet(() -> createNutrient(nutrientDto.getNutrient().name()));
                     addNutrient(recipeNeo4j, nutrientNeo4j, nutrientDto.getWeight());
                 }
             }
-            RecipeTypeNeo4j recipeType = recipeTypeNeo4jRepository.findByName(recipeTypeDto.getName())
+            RecipeTypeNeo4j recipeType = recipeTypeNeo4jRepository.findByName(recipeTypeDto.getRecipeType())
                     .orElseGet(() -> createRecipeType(recipeTypeDto));
             addRecipeType(recipeNeo4j, recipeType);
         }

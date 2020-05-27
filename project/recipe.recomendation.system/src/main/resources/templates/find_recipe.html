@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Recipes</title>
     <style type="text/css">
         body {
@@ -129,7 +129,7 @@
 
         var payload = { name: recipeName, collection: recipeCollection, ingredients: ingredients };
         $.ajax({
-            url: '/recipeSystem/api/recipe/find',
+            url: '/recipeSystem/api/recipe/?findHasIngredient=true',
             type: 'POST',
             data: JSON.stringify(payload),
             contentType: 'application/json; charset=utf-8',
@@ -159,11 +159,11 @@
                     })
                  }
                  else {
-                     alert("Recipe was not found")
+                     alert("Рецепт не найден")
                  }
             },
             error: function (jqXHR, error) {
-                alert("Cannot add recipe:" + jqXHR.responseText)
+                alert("Невозможно добавить рецепт:" + jqXHR.responseText)
             }
         });
     }
@@ -181,12 +181,7 @@
        var  result =  "<ul>"
        nutrients.forEach(function (nutrient) {
 
-       var nutrientValue = $.ajax({
-            type: "GET",
-            url: '/recipeSystem/api/nutrient/' + nutrient.nutrient,
-            async: false
-            }).responseText;
-       result += "<li> " + nutrientValue + " - " + nutrient.weight + " грамм </li>";
+       result += "<li> " + nutrient.nutrientValue + " - " + nutrient.weight + " грамм </li>";
           }
        );
        result += "</ul>";

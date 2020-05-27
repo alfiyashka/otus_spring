@@ -1,12 +1,12 @@
 package ru.avalieva.otus.recipe.recomendation.system.controller;
 
+import cookbook.common.dto.*;
+import cookbook.common.model.ENutrient;
+import cookbook.common.model.ERationStrategy;
+import cookbook.common.model.ERecipeType;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-import ru.avalieva.otus.recipe.recomendation.system.dto.*;
-import ru.avalieva.otus.recipe.recomendation.system.model.ENutrient;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERationStrategy;
-import ru.avalieva.otus.recipe.recomendation.system.model.ERecipeType;
 import ru.avalieva.otus.recipe.recomendation.system.service.RecipeManagerService;
 
 import java.util.List;
@@ -29,10 +29,11 @@ public class RecipesManagerController {
         recipeManagerService.addRecipe(recipeDtoJson);
     }
 
-    @PostMapping("/api/recipe/find")
+    @PostMapping("/api/recipe/")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public List<RecipeDtoJson> findRecipe(@RequestBody RecipeRequest recipeRequest) {
-        return recipeManagerService.findRecipe(recipeRequest);
+    public List<RecipeDtoJsonFull> findRecipe(@RequestBody RecipeRequest recipeRequest,
+                                          @RequestParam boolean findHasIngredient) {
+        return recipeManagerService.findRecipe(recipeRequest, findHasIngredient);
     }
 
     @GetMapping("/api/recipeType")
@@ -44,7 +45,7 @@ public class RecipesManagerController {
     @GetMapping("/api/recipeType/{recipeType}")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public String getRecipeTypeValue(@PathVariable String recipeType) {
-        return ERecipeType.valueOf(recipeType).getValue();
+        return RecipeTypeDtoConverter.convert(ERecipeType.valueOf(recipeType)).getRecipeTypeValue();
     }
 
     @GetMapping("/api/strategy")
@@ -55,7 +56,7 @@ public class RecipesManagerController {
 
     @GetMapping("/api/recipeType/{recipeType}/recipe")
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public List<RecipeDtoJson> getRecipesByType(@PathVariable String recipeType) {
+    public List<RecipeDtoJsonFull> getRecipesByType(@PathVariable String recipeType) {
         return recipeManagerService.getRecipesByType(recipeType);
     }
 
@@ -63,12 +64,6 @@ public class RecipesManagerController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public List<RecipeForRationDto> getRecipesByRationStrategy(@PathVariable String rationStrategy) {
         return recipeManagerService.getRecipes(ERationStrategy.valueOf(rationStrategy));
-    }
-
-    @GetMapping("/api/nutrient/{nutrientValue}")
-    @Secured({"ROLE_USER", "ROLE_ADMIN"})
-    public String getNutrientValue(@PathVariable String nutrientValue) {
-        return ENutrient.valueOf(nutrientValue.toUpperCase()).getValue();
     }
 
     @GetMapping("/api/diet/{dietStrategy}")

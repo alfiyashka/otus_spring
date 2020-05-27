@@ -2,6 +2,9 @@ package com.avalieva.otus.project.cookbook.dto;
 
 import com.avalieva.otus.project.cookbook.domain.mongo.Recipe;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import cookbook.common.dto.IngredientDto;
+import cookbook.common.dto.NutrientDto;
+import cookbook.common.dto.RecipeTypeDto;
 import lombok.*;
 import org.bson.types.ObjectId;
 
@@ -29,6 +32,6 @@ public class RecipeDtoJson {
 
     @JsonIgnore
     public RecipeTypeDto getRecipeType() {
-        return new RecipeTypeDto(type.toUpperCase());
+        return new RecipeTypeDto(type.toUpperCase(), "");
     }
 }

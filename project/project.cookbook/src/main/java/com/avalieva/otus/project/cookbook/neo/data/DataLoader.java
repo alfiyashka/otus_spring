@@ -14,6 +14,7 @@ import java.util.List;
 public class DataLoader {
     public final CookbookService cookbookService;
 
+
     public void createTestData() throws Exception {
         cookbookService.clearNeo4jData();
         ObjectMapper mapper = new ObjectMapper();

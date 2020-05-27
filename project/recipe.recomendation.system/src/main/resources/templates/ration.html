@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>Recipes</title>
@@ -166,12 +166,7 @@
        var  result =  "<ul>"
        nutrients.forEach(function (nutrient) {
 
-       var nutrientValue = $.ajax({
-            type: "GET",
-            url: '/recipeSystem/api/nutrient/' + nutrient.nutrient,
-            async: false
-            }).responseText;
-       result += "<li> " + nutrientValue + " - " + nutrient.weight + " грамм </li>";
+       result += "<li> " +  nutrient.nutrientValue + " - " + nutrient.weight + " грамм </li>";
           }
        );
        result += "</ul>";

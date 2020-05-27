@@ -1,6 +1,8 @@
 package com.avalieva.otus.project.cookbook.dto;
 
 import com.avalieva.otus.project.cookbook.domain.mongo.Recipe;
+import cookbook.common.dto.IngredientDto;
+import cookbook.common.dto.NutrientDto;
 
 import java.util.List;
 

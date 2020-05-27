@@ -19,6 +19,10 @@ spring:
       database: recipe_manager_db
       port: 27017
       host: localhost
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    use-code-as-default-message: true
 
 server:
   port: 8000
