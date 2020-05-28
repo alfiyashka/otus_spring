@@ -16,7 +16,7 @@ public class Application {
 	}
 
 	@Bean(initMethod="createTestData")
-	public DataLoader initDataLoad(CookbookService cookbookService) throws Exception {
+	public DataLoader initDataLoad(CookbookService cookbookService) {
 		return new DataLoader(cookbookService);
 	}
 
