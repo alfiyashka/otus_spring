@@ -1,0 +1,33 @@
+locale:
+  language: ru
+  country: RU
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+
+spring:
+  application:
+    name: recipe-manager
+
+  data:
+    mongodb:
+      database: recipe_manager_db
+      port: 27017
+      host: localhost
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    use-code-as-default-message: true
+
+server:
+  port: 8000
+eureka:
+  client:
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka

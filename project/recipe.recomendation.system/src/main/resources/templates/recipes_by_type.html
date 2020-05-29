@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Recipes</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        .recipes, .recipes td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+           font-size: 8pt;
+           align: center;
+           text-align: center;
+        }
+
+         a.button {
+           display: block;
+           width: 150px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<a th:href="@{/recipe_info}" href="recipe_info.html" class="button" >К главной странице</a>
+
+<form id="recipesForm">
+    <h1></h1>
+    <table class="recipes">
+        <thead>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+       $(function () {
+        var url= window.location.pathname
+        var urlVariables = url.split('/')
+        var recipeType = urlVariables[2];
+
+      $.ajax({
+            url: '/recipeSystem/api/recipeType/' + recipeType,
+            type: 'GET',
+            success: function(recipeTypeValue) {
+
+           $.ajax({
+               url: '/recipeSystem/api/recipeType/' + recipeType + '/recipe',
+               type: 'GET',
+               success: function(recipesDTO) {
+                   $('thead').empty()
+                   $('tbody').empty()
+                   if ( recipesDTO.length > 0) {
+                       $('h1').append(`Рецепты - '${recipeTypeValue}', количество - '${recipesDTO.length}' `)
+                       $('thead').append(`
+                          <tr>
+                          <th>Имя</th>
+                          <th>Калории(ККал)</th>
+                          <th>Ингредиенты</th>
+                          <th>Органические соединения</th>
+                          <th>Описание</th>
+                          </tr>
+                       `)
+                       recipesDTO.forEach(function (recipeDTO) {
+                          $('tbody').append(`
+                             <tr>
+                                <td>${recipeDTO.name}</td>
+                                <td>${recipeDTO.totalCalorie}</td>
+                                <td>${getIngredients(recipeDTO.ingredients)} </td>
+                                <td>${getNutrients(recipeDTO.nutrients)} </td>
+                                <td>${recipeDTO.description}</td>
+                             </tr>
+                          `)
+                       })
+                   }
+                   else {
+                     alert("Recipes with type '" + recipeType + "' not found")
+                   }
+               }
+              });
+           }
+        });
+    });
+    function getIngredients(ingredients) {
+      var  result =  "<ul>"
+      ingredients.forEach(function (ingredientDto) {
+          result += "<li> " + ingredientDto.ingredientName + " - " + ingredientDto.weight + "грамм </li>"
+      })
+      result += "</ul>"
+      return result
+    }
+
+    function getNutrients(nutrients) {
+       var  result =  "<ul>"
+       nutrients.forEach(function (nutrient) {
+       result += "<li> " +  nutrient.nutrientValue + " - " + nutrient.weight + " грамм </li>";
+          }
+       );
+       result += "</ul>";
+       return result;
+   }
+
+</script>
+</form>
+</body>
+</html>

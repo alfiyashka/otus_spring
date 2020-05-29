@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Recipes</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        #generateRationForm td, th {
+           border: 1px solid black;
+           background: #4E9CAF;
+           font-size: 8pt;
+           align: center;
+           text-align: center;
+        }
+
+         a.button {
+           display: block;
+           width: 150px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<a th:href="@{/recipe_info}" href="recipe_info.html" class="button" >К главной странице</a>
+
+<h1>Сгенерируйте свой рацион</h1>
+<form id="generateRationForm">
+    <fieldset>
+       <label>Выберите критерий:</label>  <input type="hidden" id="rationStrategy" readonly>
+                <select id="rationStrategySelect" onchange="setToInput()"> </select>
+       <textarea id="description" cols="100" rows="5" readonly></textarea>
+
+
+       <div class="row">
+            <button type="button" onclick="getRation()">Сгенерировать</button>
+       </div>
+    </fieldset>
+
+    <table class="recipes" border='1'>
+        <thead>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+    function setToInput() {
+
+        var rationStrategySelect = document.getElementById("rationStrategySelect").value;
+        document.getElementById("rationStrategy").value = rationStrategySelect;
+        document.getElementById("description").value = $.ajax({
+            type: "GET",
+            url: '/recipeSystem/api/diet/' + rationStrategySelect,
+            async: false
+            }).responseText;;
+    }
+
+   $(function () {
+        $.get('/recipeSystem/api/strategy').done(function (strategies) {
+            if (strategies.length > 0) {
+                  $('select').append(`
+                       <option value=none selected=true>Выберите кретерий</option>
+                  `)
+               strategies.forEach(function (strategy) {
+                  $('select').append(`
+                       <option value=${strategy.strategy}>${strategy.strategyValue}</option>
+                  `)
+               });
+            }
+            else {
+             alert("Внутренняя ошибка: нет коллекции")
+            }
+        })
+   });
+
+   function getRation() {
+        var rationStrategy = document.forms["generateRationForm"]["rationStrategy"].value;
+        var addedTr = true;
+        $.ajax({
+            url: '/recipeSystem/api/recipeRation/' + rationStrategy + '/recipe',
+            type: 'GET',
+            success: function(recipesDTO) {
+               $('thead').empty()
+               $('tbody').empty()
+               if ( recipesDTO.length > 0) {
+                   $('thead').append(`
+                       <tr>
+                          <th>Прием пищи</th>
+                          <th>Тип рецепта</th>
+                          <th>Имя</th>
+                          <th>Калории(ККал)</th>
+                          <th>Ингредиенты</th>
+                          <th>Органические соединения</th>
+                          <th>Описание</th>
+                       </tr>
+                   `)
+                   recipesDTO.forEach(function (recipeDTO) {
+                       $('tbody').append(` <tr> `);
+                       addedTr = true;
+                       if (recipeDTO.recipes.length > 1) {
+                          var rowspanValue = recipeDTO.recipes.length * 2;
+                          $('tbody').append(`<td  valign="top" rowspan=${rowspanValue}>${recipeDTO.ration.rationValue}</td>`);
+                       }
+                       else {
+                          $('tbody').append(`<td  valign="top">${recipeDTO.ration.rationValue}</td>`);
+                       }
+                       recipeDTO.recipes.forEach(function (recipe) {
+                            if (addedTr == false) {
+                                addedTr = true;
+                                $('tbody').append(`<tr>`)
+                            }
+                            $('tbody').append(`<td valign="top">${getRecipeCollection(recipe.type)}</td>`);
+                            $('tbody').append(`<td valign="top">${recipe.name}</td>`);
+                            $('tbody').append(`<td valign="top">${recipe.totalCalorie}</td>`);
+                            $('tbody').append(`<td valign="top">${getIngredients(recipe.ingredients)} </td>`);
+                            $('tbody').append(`<td valign="top">${getNutrients(recipe.nutrients)} </td>`);
+                            $('tbody').append(`<td valign="top">${recipe.description}</td>`);
+                            $('tbody').append(`</tr> `);
+                          addedTr = false;
+                        })
+                       })
+                   }
+                   else {
+                     alert("Рецептыпо диете '" + rationStrategy + "' не найдены")
+                   }
+               },
+            error: function (jqXHR, error) {
+                alert("Невозможно сгенерировать рацион по диете '" + rationStrategy + "':" + jqXHR.responseText)
+            }
+        });
+   }
+
+   function getRecipeCollection(recipeType) {
+       var recipeCollection = $.ajax({
+            type: "GET",
+            url: '/recipeSystem/api/recipeType/' + recipeType,
+            async: false
+            }).responseText;
+       return recipeCollection;
+   }
+
+   function getIngredients(ingredients) {
+        var  result =  "<ul>";
+        ingredients.forEach(function (ingredientDto) {
+               result += "<li> " + ingredientDto.ingredientName + " - " + ingredientDto.weight + "грамм </li>"
+        });
+        result += "</ul>";
+        return result;
+   }
+
+   function getNutrients(nutrients) {
+       var  result =  "<ul>"
+       nutrients.forEach(function (nutrient) {
+
+       result += "<li> " +  nutrient.nutrientValue + " - " + nutrient.weight + " грамм </li>";
+          }
+       );
+       result += "</ul>";
+       return result;
+   }
+</script>
+</form>
+</body>
+</html>

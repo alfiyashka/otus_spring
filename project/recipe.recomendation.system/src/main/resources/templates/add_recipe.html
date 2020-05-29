@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Добавить свой рецепт</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        a.button {
+           display: block;
+           width: 150px;
+           height: 25px;
+           background: #4E9CAF;
+           padding: 10px;
+           text-align: center;
+           border-radius: 5px;
+           color: black;
+           font-weight: bold;
+           margin-top: 10px;
+        }
+        #addNewRecipe input{
+           width:300px;
+        }
+        #addNewRecipe button{
+           background: #4E9CAF;
+           height: 25px;
+        }
+        .addNewRecipe, textarea, select, input{
+            font-size:11px;
+            padding:4px 2px;
+            border:solid 1px #aacfe4;
+            margin:2px 0 20px 10px;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<a th:href="@{/recipe_info}" href="recipe_info.html" class="button" >К главной странице</a>
+
+<h1>Добавьте свой рецепт</h1>
+<form id="addNewRecipe">
+    <fieldset>
+        <ul style="list-style-type:none;">
+            <li><label>Имя: </label>  <input type="text" id="name"></li>
+            <li><label>Коллеция:</label>  <input type="hidden" id="recipeCollection" readonly>
+                <select id="recipeCollectionSelect" onchange="setToInput()">
+                </select></li>
+            <li><label>Калорийность на 100 грамм в ККал: </label> <input type="number" min="0" id="calorie" ></li>
+            <li><label>Жиры в граммах: </label> <input type="number" min="0" step="0.1" id="fat" ></li>
+            <li><label>Белки в граммах: </label> <input type="number" min="0" step="0.1" id="protein" ></li>
+            <li><label>Углеводы в граммах: </label> <input type="number" min="0" step="0.1" id="carbohydrate" ></li>
+
+            <li><label>Описание:</label> <textarea id="description" cols="100" rows="5"></textarea></li>
+
+            <li><button class="add_ingredient">Добавить ингредиент &nbsp;
+                <span style="font-size:16px; font-weight:bold;">+ </span>
+                </button><li>
+
+            <div class="ingredientsContainer">
+            </div>
+        </ul>
+
+        <div class="row">
+            <button type="button" onclick="addRecipe()">Добавить рецепт</button>
+        </div>
+    </fieldset>
+</form>
+
+
+<script>
+    $(document).ready(function() {
+        var max_fields = 50;
+        var wrapper = $(".ingredientsContainer");
+        var add_button = $(".add_ingredient");
+
+        var x = 1;
+        $(add_button).click(function(e) {
+           e.preventDefault();
+           if (x < max_fields) {
+               x++;
+               $(wrapper).append('<div><label>Название ингредиента:</label>  <input type="text" id="ingredientName' + x + '" style="width:200px;">' +
+                    ' <label>Вес в граммах:</label>  <input type="number" min="0" step="0.1" id="ingredientWeight' + x + '" style="width:50px;"><a href="#" class="delete">Удалить</a></div>');
+           } else {
+              alert('You Reached the limits')
+           }
+        });
+
+        $(wrapper).on("click", ".delete", function(e) {
+           e.preventDefault();
+           $(this).parent('div').remove();
+           x--;
+        })
+    });
+
+    $(function () {
+        $.get('/recipeSystem/api/recipeType').done(function (recipeTypes) {
+            if ( recipeTypes.length > 0) {
+                  $('select').append(`
+                       <option value=none selected=true>Выберите коллекцию</option>
+                  `)
+               recipeTypes.forEach(function (recipeType) {
+                  $('select').append(`
+                       <option value=${recipeType.recipeType}>${recipeType.recipeTypeValue}</option>
+                  `)
+               });
+            }
+            else {
+            }
+        })
+    });
+
+
+    function setToInput() {
+        document.getElementById("recipeCollection").value = document.getElementById("recipeCollectionSelect").value;
+    }
+
+    function addRecipe() {
+        var recipeName = document.forms["addNewRecipe"]["name"].value;
+        var calorie = document.forms["addNewRecipe"]["calorie"].value;
+        var fat = document.forms["addNewRecipe"]["fat"].value;
+        var protein = document.forms["addNewRecipe"]["protein"].value;
+        var carbohydrate = document.forms["addNewRecipe"]["carbohydrate"].value;
+        var recipeCollection = document.forms["addNewRecipe"]["recipeCollection"].value;
+        var description = document.forms["addNewRecipe"]["description"].value;
+        var nutrientFat= {nutrient: "FAT", weight: fat};
+        var nutrientProtein= {nutrient: "PROTEIN", weight: protein};
+        var nutrientCarbohydrate= {nutrient: "CARBOHYDRATE", weight: carbohydrate};
+        var nutrients = [nutrientProtein, nutrientFat, nutrientCarbohydrate];
+
+        var ingredients = []
+        var wrapper = $(".ingredientsContainer");
+        var children = [].slice.call(wrapper[0].children);
+        children.forEach(function (child) {
+            var ingredientName = child.childNodes[2].value;
+            var ingredientWight = child.childNodes[6].value;
+            var ingredient = {ingredientName: ingredientName, weight: ingredientWight};
+            ingredients.push(ingredient);
+        });
+
+        var payload = { name: recipeName, type: recipeCollection, totalCalorie: calorie,
+               description: description, nutrients: nutrients, ingredients: ingredients };
+
+        $.ajax({
+            url: '/recipeSystem/api/recipe',
+            type: 'POST',
+            data: JSON.stringify(payload),
+            contentType: 'application/json; charset=utf-8',
+	        success: function () {
+                alert("Recipe with name '" + recipeName + "' was added")
+                window.location.href = "/recipe_info";
+            },
+            error: function (jqXHR, error) {
+                alert("Cannot add recipe:" + jqXHR.responseText)
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>

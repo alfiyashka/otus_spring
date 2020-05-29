@@ -1,0 +1,32 @@
+locale:
+  language: ru
+  country: RU
+
+spring:
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+    use-code-as-default-message: true
+
+  data:
+    mongodb:
+      database: cookbook_db
+      port: 27017
+      host: localhost
+
+    neo4j:
+      uri: http://localhost:7474/
+      username: neo4j
+      password: cook
+
+  application:
+    name: cookbook
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8001
